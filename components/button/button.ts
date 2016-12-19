@@ -1,5 +1,6 @@
-import {Directive,ElementRef,AfterViewInit,OnDestroy,HostBinding,HostListener,Input} from '@angular/core';
+import {NgModule,Directive,ElementRef,AfterViewInit,OnDestroy,HostBinding,HostListener,Input} from '@angular/core';
 import {DomHandler} from '../dom/domhandler';
+import {CommonModule} from '@angular/common';
 
 @Directive({
     selector: '[pButton]',
@@ -16,18 +17,20 @@ export class Button implements AfterViewInit, OnDestroy {
     @Input() icon: string;
 
     @Input() iconPos: string = 'left';
+    
+    @Input() cornerStyleClass: string = 'ui-corner-all';
         
-    private _label: string;
+    public _label: string;
     
-    private hover: boolean;
+    public hover: boolean;
     
-    private focus: boolean;
+    public focus: boolean;
     
-    private active: boolean;
+    public active: boolean;
     
-    private initialized: boolean;
+    public initialized: boolean;
 
-    constructor(private el: ElementRef, private domHandler: DomHandler) {}
+    constructor(public el: ElementRef, public domHandler: DomHandler) {}
     
     ngAfterViewInit() {
         this.domHandler.addMultipleClasses(this.el.nativeElement, this.getStyleClass());
@@ -46,33 +49,33 @@ export class Button implements AfterViewInit, OnDestroy {
     }
         
     @HostListener('mouseenter', ['$event']) 
-    onMouseenter(e) {
+    onMouseenter(e: Event) {
         this.hover = true;
     }
     
     @HostListener('mouseleave', ['$event']) 
-    onMouseleave(e) {
+    onMouseleave(e: Event) {
         this.hover = false;
         this.active = false;
     }
     
     @HostListener('mousedown', ['$event']) 
-    onMouseDown(e) {
+    onMouseDown(e: Event) {
         this.active = true;
     }
     
     @HostListener('mouseup', ['$event']) 
-    onMouseUp(e) {
+    onMouseUp(e: Event) {
         this.active = false;
     }
     
     @HostListener('focus', ['$event']) 
-    onFocus(e) {
+    onFocus(e: Event) {
         this.focus = true;
     }
     
     @HostListener('blur', ['$event']) 
-    onBlur(e) {
+    onBlur(e: Event) {
         this.focus = false;
     }
     
@@ -81,7 +84,7 @@ export class Button implements AfterViewInit, OnDestroy {
     }
     
     getStyleClass(): string {
-        let styleClass = 'ui-button ui-widget ui-state-default ui-corner-all';
+        let styleClass = 'ui-button ui-widget ui-state-default ' + this.cornerStyleClass;
         if(this.icon) {
             if(this.label != null && this.label != undefined) {
                 if(this.iconPos == 'left')
@@ -120,3 +123,10 @@ export class Button implements AfterViewInit, OnDestroy {
         this.initialized = false;
     }
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [Button],
+    declarations: [Button]
+})
+export class ButtonModule { }

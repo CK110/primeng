@@ -1,15 +1,19 @@
-import {Component,ElementRef,AfterViewInit,OnDestroy,OnChanges,Input,Output,SimpleChange} from '@angular/core';
-import {Message} from '../common';
+import {NgModule,Component,ElementRef,AfterViewInit,OnDestroy,OnChanges,Input,Output,SimpleChange} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {Message} from '../common/api';
 
 @Component({
     selector: 'p-messages',
     template: `
         <div *ngIf="hasMessages()" class="ui-messages ui-widget ui-corner-all" style="display:block"
-                    [ngClass]="{'ui-messages-info':(value[0].severity === 'info'),'ui-messages-warn':(value[0].severity === 'warn'),'ui-messages-error':(value[0].severity === 'error')}">
+                    [ngClass]="{'ui-messages-info':(value[0].severity === 'info'),
+                    'ui-messages-warn':(value[0].severity === 'warn'),
+                    'ui-messages-error':(value[0].severity === 'error'),
+                    'ui-messages-success':(value[0].severity === 'success')}">
             <a href="#" class="ui-messages-close" (click)="clear($event)" *ngIf="closable">
                 <i class="fa fa-close"></i>
             </a>
-            <span class="ui-messages-icon fa fa-2x fa-info-circle"></span>
+            <span class="ui-messages-icon fa fa-fw fa-2x" [ngClass]="icon"></span>
             <ul>
                 <li *ngFor="let msg of value">
                     <span class="ui-messages-summary">{{msg.summary}}</span>
@@ -38,4 +42,45 @@ export class Messages {
 
         event.preventDefault();
     }
+    
+    get icon(): string {
+        let icon: string = null;
+        if(this.hasMessages()) {
+            let msg = this.value[0];
+            switch(msg.severity) {
+                case 'success':
+                    icon = 'fa-check';
+                break;
+                
+                case 'info':
+                    icon = 'fa-info-circle';
+                break;
+                
+                case 'error':
+                    icon = 'fa-close';
+                break;
+                
+                case 'warn':
+                    icon = 'fa-warning';
+                break;
+                
+                case 'success':
+                    icon = 'fa-check';
+                break;
+                
+                default:
+                    icon = 'fa-info-circle';
+                break;
+            }
+        }
+        
+        return icon;
+    }
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [Messages],
+    declarations: [Messages]
+})
+export class MessagesModule { }

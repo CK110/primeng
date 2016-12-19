@@ -1,55 +1,60 @@
-import {Component,ElementRef,OnDestroy,DoCheck,Input,Output,ContentChild,TemplateRef} from '@angular/core';
-import {Button} from '../button/button';
+import {NgModule,Component,ElementRef,OnDestroy,AfterViewInit,AfterViewChecked,DoCheck,Input,Output,ContentChild,TemplateRef,EventEmitter} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {ButtonModule} from '../button/button';
+import {SharedModule} from '../common/shared';
 import {DomHandler} from '../dom/domhandler';
 
 @Component({
     selector: 'p-pickList',
     template: `
-        <div [class]="styleClass" [ngStyle]="style" [ngClass]="{'ui-picklist ui-widget ui-helper-clearfix': true, 'ui-picklist-responsive': responsive}">
-            <div class="ui-picklist-source-controls ui-picklist-buttons">
+        <div [class]="styleClass" [ngStyle]="style" [ngClass]="{'ui-picklist ui-widget ui-helper-clearfix': true,'ui-picklist-responsive': responsive}">
+            <div class="ui-picklist-source-controls ui-picklist-buttons" *ngIf="showSourceControls">
                 <div class="ui-picklist-buttons-cell">
-                    <button type="button" pButton icon="fa-angle-up" (click)="moveUp(sourcelist,source)"></button>
-                    <button type="button" pButton icon="fa-angle-double-up" (click)="moveTop(sourcelist,source)"></button>
-                    <button type="button" pButton icon="fa-angle-down" (click)="moveDown(sourcelist,source)"></button>
-                    <button type="button" pButton icon="fa-angle-double-down" (click)="moveBottom(sourcelist,source)"></button>
+                    <button type="button" pButton icon="fa-angle-up" (click)="moveUp(sourcelist,source,selectedItemsSource)"></button>
+                    <button type="button" pButton icon="fa-angle-double-up" (click)="moveTop(sourcelist,source,selectedItemsSource)"></button>
+                    <button type="button" pButton icon="fa-angle-down" (click)="moveDown(sourcelist,source,selectedItemsSource)"></button>
+                    <button type="button" pButton icon="fa-angle-double-down" (click)="moveBottom(sourcelist,source,selectedItemsSource)"></button>
                 </div>
             </div>
-            <div class="ui-picklist-listwrapper ui-picklist-source-wrapper">
+            <div class="ui-picklist-listwrapper ui-picklist-source-wrapper" [ngClass]="{'ui-picklist-listwrapper-nocontrols':!showSourceControls}">
                 <div class="ui-picklist-caption ui-widget-header ui-corner-tl ui-corner-tr" *ngIf="sourceHeader">{{sourceHeader}}</div>
-                <ul #sourcelist class="ui-widget-content ui-picklist-list ui-picklist-source ui-corner-bottom" [ngStyle]="sourceStyle"
-                    (mouseover)="onMouseover($event)" (mouseout)="onMouseout($event)" (click)="onClick($event)">
-                    <template ngFor [ngForOf]="source" [ngForTemplate]="itemTemplate"></template>
+                <ul #sourcelist class="ui-widget-content ui-picklist-list ui-picklist-source ui-corner-bottom" [ngStyle]="sourceStyle">
+                    <li *ngFor="let item of source" [ngClass]="{'ui-picklist-item':true,'ui-state-hover':(hoveredItem==item),'ui-state-highlight':isSelected(item,selectedItemsSource)}"
+                        (mouseenter)="hoveredItem=item" (mouseleave)="hoveredItem=null" (click)="onItemClick($event,item,selectedItemsSource)">
+                        <template [pTemplateWrapper]="itemTemplate" [item]="item"></template>
+                    </li>
                 </ul>
             </div>
             <div class="ui-picklist-buttons">
                 <div class="ui-picklist-buttons-cell">
-                    <button type="button" pButton icon="fa-angle-right" (click)="moveRight(sourcelist)"></button>
-                    <button type="button" pButton icon="fa-angle-double-right" (click)="moveAllRight(sourcelist)"></button>
-                    <button type="button" pButton icon="fa-angle-left" (click)="moveLeft(targetlist)"></button>
-                    <button type="button" pButton icon="fa-angle-double-left" (click)="moveAllLeft(targetlist)"></button>
+                    <button type="button" pButton icon="fa-angle-right" (click)="moveRight(targetlist)"></button>
+                    <button type="button" pButton icon="fa-angle-double-right" (click)="moveAllRight()"></button>
+                    <button type="button" pButton icon="fa-angle-left" (click)="moveLeft(sourcelist)"></button>
+                    <button type="button" pButton icon="fa-angle-double-left" (click)="moveAllLeft()"></button>
                 </div>
             </div>
-            <div class="ui-picklist-listwrapper ui-picklist-target-wrapper">
+            <div class="ui-picklist-listwrapper ui-picklist-target-wrapper" [ngClass]="{'ui-picklist-listwrapper-nocontrols':!showSourceControls}">
                 <div class="ui-picklist-caption ui-widget-header ui-corner-tl ui-corner-tr" *ngIf="targetHeader">{{targetHeader}}</div>
-                <ul #targetlist class="ui-widget-content ui-picklist-list ui-picklist-source ui-corner-bottom" [ngStyle]="targetStyle"
-                    (mouseover)="onMouseover($event)" (mouseout)="onMouseout($event)" (click)="onClick($event)">
-                    <template ngFor [ngForOf]="target" [ngForTemplate]="itemTemplate"></template>
+                <ul #targetlist class="ui-widget-content ui-picklist-list ui-picklist-target ui-corner-bottom" [ngStyle]="targetStyle">
+                    <li *ngFor="let item of target" [ngClass]="{'ui-picklist-item':true,'ui-state-hover':(hoveredItem==item),'ui-state-highlight':isSelected(item,selectedItemsTarget)}"
+                        (mouseenter)="hoveredItem=item" (mouseleave)="hoveredItem=null" (click)="onItemClick($event,item,selectedItemsTarget)">
+                        <template [pTemplateWrapper]="itemTemplate" [item]="item"></template>
+                    </li>
                 </ul>
             </div>
-            <div class="ui-picklist-target-controls ui-picklist-buttons">
+            <div class="ui-picklist-target-controls ui-picklist-buttons" *ngIf="showTargetControls">
                 <div class="ui-picklist-buttons-cell">
-                    <button type="button" pButton icon="fa-angle-up" (click)="moveUp(targetlist,target)"></button>
-                    <button type="button" pButton icon="fa-angle-double-up" (click)="moveTop(targetlist,target)"></button>
-                    <button type="button" pButton icon="fa-angle-down" (click)="moveDown(targetlist,target)"></button>
-                    <button type="button" pButton icon="fa-angle-double-down" (click)="moveBottom(targetlist,target)"></button>
+                    <button type="button" pButton icon="fa-angle-up" (click)="moveUp(targetlist,target,selectedItemsTarget)"></button>
+                    <button type="button" pButton icon="fa-angle-double-up" (click)="moveTop(targetlist,target,selectedItemsTarget)"></button>
+                    <button type="button" pButton icon="fa-angle-down" (click)="moveDown(targetlist,target,selectedItemsTarget)"></button>
+                    <button type="button" pButton icon="fa-angle-double-down" (click)="moveBottom(targetlist,target,selectedItemsTarget)"></button>
                 </div>
             </div>
         </div>
     `,
-    directives: [Button],
     providers: [DomHandler]
 })
-export class PickList implements OnDestroy {
+export class PickList implements OnDestroy,AfterViewChecked {
 
     @Input() source: any[];
 
@@ -68,183 +73,233 @@ export class PickList implements OnDestroy {
     @Input() sourceStyle: any;
 
     @Input() targetStyle: any;
+    
+    @Input() showSourceControls: boolean = true;
+    
+    @Input() showTargetControls: boolean = true;
+    
+    @Output() onMoveToSource: EventEmitter<any> = new EventEmitter();
+    
+    @Output() onMoveToTarget: EventEmitter<any> = new EventEmitter();
 
     @ContentChild(TemplateRef) itemTemplate: TemplateRef<any>;
+    
+    hoveredItem: any;
+    
+    selectedItemsSource: any[] = [];
+    
+    selectedItemsTarget: any[] = [];
+        
+    reorderedListElement: any;
+    
+    movedUp: boolean;
+    
+    movedDown: boolean;
 
-    constructor(private el: ElementRef, private domHandler: DomHandler) {}
-
-    onMouseover(event) {
-        let element = event.target;
-        if(element.nodeName != 'UL') {
-            let item = this.findListItem(element);
-            this.domHandler.addClass(item, 'ui-state-hover');
+    constructor(public el: ElementRef, public domHandler: DomHandler) {}
+        
+    ngAfterViewChecked() {
+        if(this.movedUp||this.movedDown) {
+            let listItems = this.domHandler.find(this.reorderedListElement, 'li.ui-state-highlight');
+            let listItem;
+            
+            if(this.movedUp)
+                listItem = listItems[0];
+            else
+                listItem = listItems[listItems.length - 1];
+            
+            this.domHandler.scrollInView(this.reorderedListElement, listItem);
+            this.movedUp = false;
+            this.movedDown = false;
+            this.reorderedListElement = null;
         }
     }
-
-    onMouseout(event) {
-        let element = event.target;
-        if(element.nodeName != 'UL') {
-            let item = this.findListItem(element);
-            this.domHandler.removeClass(item, 'ui-state-hover');
-        }
-    }
-
-    onClick(event) {
-        let element = event.target;
-        if(element.nodeName != 'UL') {
-            let item = this.findListItem(element);
-            this.onItemClick(event, item);
-        }
-    }
-
-    findListItem(element) {
-        if(element.nodeName == 'LI') {
-            return element;
-        }
-        else {
-            let parent = element.parentElement;
-            while(parent.nodeName != 'LI') {
-                parent = parent.parentElement;
-            }
-            return parent;
-        }
-    }
-
-    onItemClick(event, item) {
+    
+    onItemClick(event, item: any, selectedItems: any[]) {
         let metaKey = (event.metaKey||event.ctrlKey);
-
-        if(this.domHandler.hasClass(item, 'ui-state-highlight')) {
-            if(metaKey) {
-                this.domHandler.removeClass(item, 'ui-state-highlight');
-            }
+        let index = this.findIndexInSelection(item,selectedItems);
+        let selected = (index != -1);
+        
+        if(selected && metaKey) {
+            selectedItems.splice(index, 1);
         }
         else {
             if(!metaKey) {
-                let siblings = this.domHandler.siblings(item);
-                for(let i = 0; i < siblings.length; i++) {
-                    let sibling = siblings[i];
-                    if(this.domHandler.hasClass(sibling, 'ui-state-highlight')) {
-                        this.domHandler.removeClass(sibling, 'ui-state-highlight');
-                    }
+                selectedItems.length = 0;
+            }         
+            selectedItems.push(item);
+        }
+    }
+
+    moveUp(listElement, list, selectedItems) {
+        if(selectedItems && selectedItems.length) {
+            for(let i = 0; i < selectedItems.length; i++) {
+                let selectedItem = selectedItems[i];
+                let selectedItemIndex: number = this.findIndexInList(selectedItem, list);
+
+                if(selectedItemIndex != 0) {
+                    let movedItem = list[selectedItemIndex];
+                    let temp = list[selectedItemIndex-1];
+                    list[selectedItemIndex-1] = movedItem;
+                    list[selectedItemIndex] = temp;
+                }
+                else {
+                    break;
                 }
             }
-
-            this.domHandler.removeClass(item, 'ui-state-hover');
-            this.domHandler.addClass(item, 'ui-state-highlight');
+            
+            this.movedUp = true;
+            this.reorderedListElement = listElement;
         }
     }
 
-    moveUp(listElement, list) {
-        let selectedElements = this.getSelectedListElements(listElement);
-        for(let i = 0; i < selectedElements.length; i++) {
-            let selectedElement = selectedElements[i];
-            let selectedElementIndex: number = this.domHandler.index(selectedElement);
+    moveTop(listElement, list, selectedItems) {
+        if(selectedItems && selectedItems.length) {
+            for(let i = 0; i < selectedItems.length; i++) {
+                let selectedItem = selectedItems[i];
+                let selectedItemIndex: number = this.findIndexInList(selectedItem, list);
 
-            if(selectedElementIndex != 0) {
-                let movedItem = list[selectedElementIndex];
-                let temp = list[selectedElementIndex-1];
-                list[selectedElementIndex-1] = movedItem;
-                list[selectedElementIndex] = temp;
-                this.domHandler.scrollInView(listElement, this.getListElements(listElement)[selectedElementIndex - 1]);
+                if(selectedItemIndex != 0) {
+                    let movedItem = list.splice(selectedItemIndex,1)[0];
+                    list.unshift(movedItem);
+                }
+                else {
+                    break;
+                }
             }
-            else {
-                break;
-            }
+            
+            listElement.scrollTop = 0;
         }
     }
 
-    moveTop(listElement, list) {
-        let selectedElements = this.getSelectedListElements(listElement);
-        for(let i = 0; i < selectedElements.length; i++) {
-            let selectedElement = selectedElements[i];
-            let selectedElementIndex: number = this.domHandler.index(selectedElement);
+    moveDown(listElement, list, selectedItems) {
+        if(selectedItems && selectedItems.length) {
+            for(let i = selectedItems.length - 1; i >= 0; i--) {
+                let selectedItem = selectedItems[i];
+                let selectedItemIndex: number = this.findIndexInList(selectedItem, list);
 
-            if(selectedElementIndex != 0) {
-                let movedItem = list.splice(selectedElementIndex,1)[0];
-                list.unshift(movedItem);
-                listElement.scrollTop = 0;
+                if(selectedItemIndex != (list.length - 1)) {
+                    let movedItem = list[selectedItemIndex];
+                    let temp = list[selectedItemIndex+1];
+                    list[selectedItemIndex+1] = movedItem;
+                    list[selectedItemIndex] = temp;
+                }
+                else {
+                    break;
+                }
             }
-            else {
-                break;
-            }
+            
+            this.movedDown = true;
+            this.reorderedListElement = listElement;
         }
     }
 
-    moveDown(listElement, list) {
-        let selectedElements = this.getSelectedListElements(listElement);
-        for(let i = selectedElements.length - 1; i >= 0; i--) {
-            let selectedElement = selectedElements[i];
-            let selectedElementIndex: number = this.domHandler.index(selectedElement);
+    moveBottom(listElement, list, selectedItems) {
+        if(selectedItems && selectedItems.length) {
+            for(let i = selectedItems.length - 1; i >= 0; i--) {
+                let selectedItem = selectedItems[i];
+                let selectedItemIndex: number = this.findIndexInList(selectedItem, list);
 
-            if(selectedElementIndex != (list.length - 1)) {
-                let movedItem = list[selectedElementIndex];
-                let temp = list[selectedElementIndex+1];
-                list[selectedElementIndex+1] = movedItem;
-                list[selectedElementIndex] = temp;
-                this.domHandler.scrollInView(listElement, this.getListElements(listElement)[selectedElementIndex + 1]);
+                if(selectedItemIndex != (list.length - 1)) {
+                    let movedItem = list.splice(selectedItemIndex,1)[0];
+                    list.push(movedItem);
+                }
+                else {
+                    break;
+                }
             }
-            else {
-                break;
-            }
+            
+            listElement.scrollTop = listElement.scrollHeight;
         }
     }
 
-    moveBottom(listElement, list) {
-        let selectedElements = this.getSelectedListElements(listElement);
-        for(let i = selectedElements.length - 1; i >= 0; i--) {
-            let selectedElement = selectedElements[i];
-            let selectedElementIndex: number = this.domHandler.index(selectedElement);
-
-            if(selectedElementIndex != (list.length - 1)) {
-                let movedItem = list.splice(selectedElementIndex,1)[0];
-                list.push(movedItem);
-                listElement.scrollTop = listElement.scrollHeight;
+    moveRight(targetListElement) {
+        if(this.selectedItemsSource && this.selectedItemsSource.length) {
+            for(let i = 0; i < this.selectedItemsSource.length; i++) {
+                let selectedItem = this.selectedItemsSource[i];
+                if(this.findIndexInList(selectedItem, this.target) == -1) {
+                    this.target.push(this.source.splice(this.findIndexInList(selectedItem, this.source),1)[0]);
+                }
             }
-            else {
-                break;
-            }
-        }
-    }
-
-    moveRight(sourceListElement) {
-        let selectedElements = this.getSelectedListElements(sourceListElement);
-        let i = selectedElements.length;
-        while(i--) {
-            this.target.push(this.source.splice(this.domHandler.index(selectedElements[i]),1)[0]);
+            this.onMoveToTarget.emit({
+                items: this.selectedItemsSource
+            });
+            this.selectedItemsSource = [];
         }
     }
 
     moveAllRight() {
-        for(let i = 0; i < this.source.length; i++) {
-            this.target.push(this.source[i]);
+        if(this.source) {
+            for(let i = 0; i < this.source.length; i++) {
+                this.target.push(this.source[i]);
+            }
+            this.onMoveToTarget.emit({
+                items: this.source
+            });
+            this.source.splice(0, this.source.length);
+            this.selectedItemsSource = [];
         }
-        this.source.splice(0, this.source.length);
     }
 
-    moveLeft(targetListElement) {
-        let selectedElements = this.getSelectedListElements(targetListElement);
-        let i = selectedElements.length;
-        while(i--) {
-            this.source.push(this.target.splice(this.domHandler.index(selectedElements[i]),1)[0]);
+    moveLeft(sourceListElement) {
+        if(this.selectedItemsTarget && this.selectedItemsTarget.length) {
+            for(let i = 0; i < this.selectedItemsTarget.length; i++) {
+                let selectedItem = this.selectedItemsTarget[i];
+                if(this.findIndexInList(selectedItem, this.source) == -1) {
+                    this.source.push(this.target.splice(this.findIndexInList(selectedItem, this.target),1)[0]);
+                }
+            }
+            this.onMoveToSource.emit({
+                items: this.selectedItemsTarget
+            });
+            this.selectedItemsTarget = [];
         }
     }
 
     moveAllLeft() {
-        for(let i = 0; i < this.target.length; i++) {
-            this.source.push(this.target[i]);
+        if(this.target) {
+            for(let i = 0; i < this.target.length; i++) {
+                this.source.push(this.target[i]);
+            }
+            this.onMoveToSource.emit({
+                items: this.target
+            });
+            this.target.splice(0, this.target.length);
+            this.selectedItemsTarget = [];
         }
-        this.target.splice(0, this.target.length);
     }
 
-    getListElements(listElement) {
-        return listElement.children;
+    isSelected(item: any, selectedItems: any[]) {
+        return this.findIndexInSelection(item, selectedItems) != -1;
     }
-
-    getSelectedListElements(listElement) {
-        return this.domHandler.find(listElement, 'li.ui-state-highlight');
+    
+    findIndexInSelection(item: any, selectedItems: any[]): number {
+        return this.findIndexInList(item, selectedItems);
+    }
+    
+    findIndexInList(item: any, list: any): number {
+        let index: number = -1;
+        
+        if(list) {
+            for(let i = 0; i < list.length; i++) {
+                if(list[i] == item) {
+                    index = i;
+                    break;
+                }
+            }
+        }
+        
+        return index;
     }
 
     ngOnDestroy() {
 
     }
 }
+
+@NgModule({
+    imports: [CommonModule,ButtonModule,SharedModule],
+    exports: [PickList,SharedModule],
+    declarations: [PickList]
+})
+export class PickListModule { }

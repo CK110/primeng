@@ -1,29 +1,45 @@
 import {Component,OnInit} from '@angular/core';
-import {ROUTER_DIRECTIVES} from '@angular/router';
-import {HTTP_PROVIDERS}    from '@angular/http';
-import {DataTable} from '../../../components/datatable/datatable';
-import {CodeHighlighter} from '../../../components/codehighlighter/codehighlighter';
-import {TabView} from '../../../components/tabview/tabview';
-import {TabPanel} from '../../../components/tabview/tabpanel';
-import {InputText} from '../../../components/inputtext/inputtext';
 import {Car} from '../domain/car';
-import {Column} from '../../../components/column/column';
-import {Header} from '../../../components/common';
-import {DataTableSubmenu} from './datatablesubmenu.component';
 import {CarService} from '../service/carservice';
+import {SelectItem} from '../../../components/common/api';
 
 @Component({
-    templateUrl: 'showcase/demo/datatable/datatablefilterdemo.html',
-    directives: [DataTable,Column,Header,InputText,DataTableSubmenu,TabPanel,TabView,CodeHighlighter,ROUTER_DIRECTIVES],
-    providers: [HTTP_PROVIDERS,CarService]
+    templateUrl: 'showcase/demo/datatable/datatablefilterdemo.html'
 })
 export class DataTableFilterDemo implements OnInit {
 
     cars: Car[];
-
+    
+    brands: SelectItem[];
+    
+    colors: SelectItem[];
+    
     constructor(private carService: CarService) {}
 
     ngOnInit() {
         this.carService.getCarsMedium().then(cars => this.cars = cars);
+        
+        this.brands = [];
+        this.brands.push({label: 'All Brands', value: null});
+        this.brands.push({label: 'Audi', value: 'Audi'});
+        this.brands.push({label: 'BMW', value: 'BMW'});
+        this.brands.push({label: 'Fiat', value: 'Fiat'});
+        this.brands.push({label: 'Honda', value: 'Honda'});
+        this.brands.push({label: 'Jaguar', value: 'Jaguar'});
+        this.brands.push({label: 'Mercedes', value: 'Mercedes'});
+        this.brands.push({label: 'Renault', value: 'Renault'});
+        this.brands.push({label: 'VW', value: 'VW'});
+        this.brands.push({label: 'Volvo', value: 'Volvo'});
+        
+        this.colors = [];
+        this.colors.push({label: 'White', value: 'White'});
+        this.colors.push({label: 'Green', value: 'Green'});
+        this.colors.push({label: 'Silver', value: 'Silver'});
+        this.colors.push({label: 'Black', value: 'Black'});
+        this.colors.push({label: 'Red', value: 'Red'});
+        this.colors.push({label: 'Maroon', value: 'Maroon'});
+        this.colors.push({label: 'Brown', value: 'Brown'});
+        this.colors.push({label: 'Orange', value: 'Orange'});
+        this.colors.push({label: 'Blue', value: 'Blue'});
     }
 }

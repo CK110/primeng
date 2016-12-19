@@ -1,13 +1,13 @@
-import {Component,ElementRef,AfterViewInit,OnDestroy,DoCheck,Input,Output,EventEmitter,IterableDiffers} from '@angular/core';
-import {SelectItem} from '../common';
+import {NgModule,Component,ElementRef,OnDestroy,DoCheck,Input,Output,EventEmitter,IterableDiffers,AfterViewChecked} from '@angular/core';
+import {CommonModule} from '@angular/common';
+
+declare var jQuery: any;
 
 @Component({
     selector: 'p-schedule',
-    template: `
-        <div [ngStyle]="style" [class]="styleClass"></div>
-    `
+    template: '<div [ngStyle]="style" [class]="styleClass"></div>'
 })
-export class Schedule {
+export class Schedule implements DoCheck,OnDestroy,AfterViewChecked {
     
     @Input() events: any[];
     
@@ -41,6 +41,8 @@ export class Schedule {
     
     @Input() editable: boolean;
     
+    @Input() droppable: boolean;
+    
     @Input() eventStartEditable: boolean;
     
     @Input() eventDurationEditable: boolean;
@@ -48,7 +50,9 @@ export class Schedule {
     @Input() defaultView: string = 'month';
     
     @Input() allDaySlot: boolean = true;
-    
+
+    @Input() allDayText: string = 'all-day';
+
     @Input() slotDuration: any = '00:30:00';
     
     @Input() slotLabelInterval: any;
@@ -76,8 +80,14 @@ export class Schedule {
     @Input() eventConstraint: any;
     
     @Input() locale: any;
+
+    @Input() eventRender: Function;
+    
+    @Input() dayRender: Function;
     
     @Output() onDayClick: EventEmitter<any> = new EventEmitter();
+    
+    @Output() onDrop: EventEmitter<any> = new EventEmitter();
     
     @Output() onEventClick: EventEmitter<any> = new EventEmitter();
         
@@ -107,12 +117,18 @@ export class Schedule {
     
     schedule: any;
 
-    constructor(private el: ElementRef, differs: IterableDiffers) {
+    constructor(public el: ElementRef, differs: IterableDiffers) {
         this.differ = differs.find([]).create(null);
         this.initialized = false;
     }
+    
+    ngAfterViewChecked() {
+        if(!this.initialized && this.el.nativeElement.offsetParent) {
+            this.initialize();
+        }
+    }
 
-    ngAfterViewInit() {
+    initialize() {
         this.schedule = jQuery(this.el.nativeElement.children[0]);
         let options = {
             theme: true,
@@ -129,10 +145,12 @@ export class Schedule {
             eventLimit: this.eventLimit,
             defaultDate: this.defaultDate,
             editable: this.editable,
+            droppable: this.droppable,
             eventStartEditable: this.eventStartEditable,
             eventDurationEditable: this.eventDurationEditable,
             defaultView: this.defaultView,
-            allDayslot: this.allDaySlot,
+            allDaySlot: this.allDaySlot,
+            allDayText: this.allDayText,
             slotDuration: this.slotDuration,
             slotLabelInterval: this.slotLabelInterval,
             snapDuration: this.snapDuration,
@@ -146,6 +164,8 @@ export class Schedule {
             dragScroll: this.dragScroll,
             eventOverlap: this.eventOverlap,
             eventConstraint: this.eventConstraint,
+            eventRender: this.eventRender,
+            dayRender: this.dayRender,
             events: (start, end, timezone, callback) => {
                 callback(this.events);
             },
@@ -154,6 +174,13 @@ export class Schedule {
                     'date': date,
                     'jsEvent': jsEvent,
                     'view': view
+                });
+            },
+            drop: (date, jsEvent, ui, resourceId) => {
+                this.onDrop.emit({
+                    'date': date,
+                    'jsEvent': jsEvent,
+                    'resourceId': resourceId
                 });
             },
             eventClick: (calEvent, jsEvent, view) => {
@@ -282,9 +309,20 @@ export class Schedule {
     incrementDate(duration: any) {
         this.schedule.fullCalendar('incrementDate', duration);
     }
+     
+    changeView(viewName: string) {
+        this.schedule.fullCalendar('changeView', viewName);   
+    }
     
     getDate() {
         return this.schedule.fullCalendar('getDate');
     }
 
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [Schedule],
+    declarations: [Schedule]
+})
+export class ScheduleModule { }

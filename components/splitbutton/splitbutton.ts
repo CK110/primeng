@@ -1,34 +1,24 @@
-import {Component,ElementRef,OnInit,OnDestroy,Input,Output,EventEmitter,ContentChildren,QueryList,Renderer} from '@angular/core';
-import {SplitButtonItem} from './splitbuttonitem';
+import {NgModule,Component,ElementRef,OnInit,OnDestroy,Input,Output,EventEmitter,ContentChildren,QueryList,Renderer} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {DomHandler} from '../dom/domhandler';
-import {Router,ROUTER_DIRECTIVES} from '@angular/router';
+import {MenuItem} from '../common/api';
+import {ButtonModule} from '../button/button';
+import {Router} from '@angular/router';
 
 @Component({
     selector: 'p-splitButton',
     template: `
-        <div #container [ngClass]="'ui-splitbutton ui-buttonset ui-widget'" [ngStyle]="style" [class]="styleClass">
-            <button #defaultbtn type="button" class="ui-button ui-widget ui-state-default ui-corner-left"
-                [ngClass]="{'ui-button-text-only':(!icon&&label),'ui-button-icon-only':(icon&&!label),
-                'ui-button-text-icon-left':(icon&&label&&iconPos=='left'),'ui-button-text-icon-right':(icon&&label&&iconPos=='right'),
-                'ui-state-hover':hoverDefaultBtn,'ui-state-focus':focusDefaultBtn,'ui-state-active':activeDefaultBtn}"
-                (mouseenter)="hoverDefaultBtn=true" (mouseleave)="hoverDefaultBtn=false"  (focus)="focusDefaultBtn=true" (blur)="focusDefaultBtn=false"
-                (mousedown)="activeDefaultBtn=true" (mouseup)="activeDefaultBtn=false" (click)="onDefaultButtonClick($event)">
-                <span [ngClass]="'ui-button-icon-left ui-c fa fa-fw'" [class]="icon"></span>
-                <span class="ui-button-text ui-c">{{label}}</span>
-            </button>
-            <button class="ui-splitbutton-menubutton ui-button ui-widget ui-state-default ui-button-icon-only ui-corner-right" type="button"
-                [ngClass]="{'ui-state-hover':hoverDropdown,'ui-state-focus':focusDropdown,'ui-state-active':activeDropdown}"
-                (mouseenter)="hoverDropdown=true" (mouseleave)="hoverDropdown=false" (focus)="focusDropdown=true" (blur)="focusDropdown=false"
-                (mousedown)="activeDropdown=true" (mouseup)="activeDropdown=false" (click)="onDropdownClick($event,menu,container)">
-                <span class="ui-button-icon-left ui-c fa fa-fw fa-caret-down"></span>
-                <span class="ui-button-text ui-c">ui-button</span>
-            </button>
+        <div #container [ngClass]="{'ui-splitbutton ui-buttonset ui-widget':true,'ui-state-disabled':disabled}" [ngStyle]="style" [class]="styleClass">
+            <button #defaultbtn type="button" pButton [icon]="icon" [label]="label" cornerStyleClass="ui-corner-left" (click)="onDefaultButtonClick($event)" [disabled]="disabled">
+            </button><button type="button" pButton class="ui-splitbutton-menubutton" icon="fa-caret-down" cornerStyleClass="ui-corner-right" (click)="onDropdownClick($event,menu,container)" [disabled]="disabled"></button>
             <div #menu [ngClass]="'ui-menu ui-menu-dynamic ui-widget ui-widget-content ui-corner-all ui-helper-clearfix ui-shadow'" [style.display]="menuVisible ? 'block' : 'none'"
                     [ngStyle]="menuStyle" [class]="menuStyleClass">
                 <ul class="ui-menu-list ui-helper-reset">
-                    <li class="ui-menuitem ui-widget ui-corner-all" role="menuitem" *ngFor="let item of items"
+                    <li class="ui-menuitem ui-widget ui-corner-all" role="menuitem" *ngFor="let item of model"
                         (mouseenter)="hoveredItem=item" (mouseleave)="hoveredItem=null">
-                        <a [href]="item.url||'#'" class="ui-menuitem-link ui-corner-all" (click)="onItemClick($event,item)" [ngClass]="{'ui-state-hover':(hoveredItem==item)}">
+                        <a [href]="item.url||'#'" 
+                        [ngClass]="{'ui-menuitem-link ui-corner-all':true,'ui-state-hover':(hoveredItem==item&&!item.disabled),'ui-state-disabled':item.disabled}" 
+                        (click)="itemClick($event,item)">
                             <span [ngClass]="'ui-menuitem-icon fa fa-fw'" [class]="item.icon" *ngIf="item.icon"></span>
                             <span class="ui-menuitem-text">{{item.label}}</span>
                         </a>
@@ -37,10 +27,11 @@ import {Router,ROUTER_DIRECTIVES} from '@angular/router';
             </div>
         </div>
     `,
-    providers: [DomHandler],
-    directives: [ROUTER_DIRECTIVES]
+    providers: [DomHandler]
 })
 export class SplitButton implements OnInit,OnDestroy {
+
+    @Input() model: MenuItem[];
 
     @Input() icon: string;
 
@@ -58,27 +49,15 @@ export class SplitButton implements OnInit,OnDestroy {
     
     @Input() menuStyleClass: string;
     
-    @ContentChildren(SplitButtonItem) items : QueryList<SplitButtonItem>;
+    @Input() disabled: boolean;
+            
+    public hoveredItem: any;
     
-    private hoverDefaultBtn: boolean;
+    public menuVisible: boolean = false;
     
-    private focusDefaultBtn: boolean;
-    
-    private activeDefaultBtn: boolean;
-    
-    private hoverDropdown: boolean;
-    
-    private focusDropdown: boolean;
-    
-    private activeDropdown: boolean;
-    
-    private hoveredItem: any;
-    
-    private menuVisible: boolean = false;
-    
-    private documentClickListener: any;
+    public documentClickListener: any;
 
-    constructor(private el: ElementRef, private domHandler: DomHandler, private renderer: Renderer, private router: Router) {}
+    constructor(public el: ElementRef, public domHandler: DomHandler, public renderer: Renderer, public router: Router) {}
     
     ngOnInit() {
         this.documentClickListener = this.renderer.listenGlobal('body', 'click', () => {
@@ -86,32 +65,51 @@ export class SplitButton implements OnInit,OnDestroy {
         });
     }
     
-    onDefaultButtonClick(event) {
+    onDefaultButtonClick(event: Event) {
         this.onClick.emit(event);
     }
     
-    onDropdownClick(event, menu, container) {
+    itemClick(event: Event, item: MenuItem) {
+        if(item.disabled) {
+            event.preventDefault();
+            return;
+        }
+        
+        if(!item.url||item.routerLink) {
+            event.preventDefault();
+        }
+        
+        if(item.command) {
+            if(!item.eventEmitter) {
+                item.eventEmitter = new EventEmitter();
+                item.eventEmitter.subscribe(item.command);
+            }
+            
+            item.eventEmitter.emit(event);
+        }
+        
+        this.menuVisible = false;
+        
+        if(item.routerLink) {
+            this.router.navigate(item.routerLink);
+        }
+    }
+    
+    onDropdownClick(event: Event, menu: Element, container: Element) {
         this.menuVisible= !this.menuVisible;
         this.domHandler.relativePosition(menu, container);
         this.domHandler.fadeIn(menu,25);
         event.stopPropagation();
     }
-    
-    onItemClick(event,item: SplitButtonItem) {
-        if(!item.url&&!item.routerLink) {
-            event.preventDefault();
-        }
         
-        this.hoveredItem = null;
-        
-        item.onClick.emit(event);
-        
-        if(item.routerLink) {
-            this.router.navigate(item.routerLink);
-        }         
-    }
-    
     ngOnDestroy() {
         this.documentClickListener();
     }
 }
+
+@NgModule({
+    imports: [CommonModule,ButtonModule],
+    exports: [SplitButton,ButtonModule],
+    declarations: [SplitButton]
+})
+export class SplitButtonModule { }

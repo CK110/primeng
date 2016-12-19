@@ -1,4 +1,5 @@
-import {Directive,ElementRef,HostListener,Input} from '@angular/core';
+import {NgModule,Directive,ElementRef,HostListener,Input} from '@angular/core';
+import {CommonModule} from '@angular/common';
 
 @Directive({
     selector: '[pInputText]',
@@ -9,7 +10,8 @@ import {Directive,ElementRef,HostListener,Input} from '@angular/core';
         '[class.ui-widget]': 'true',
         '[class.ui-state-hover]': 'hover',
         '[class.ui-state-focus]': 'focus',
-        '[class.ui-state-disabled]': 'isDisabled()'
+        '[class.ui-state-disabled]': 'disabled',
+        '[class.ui-state-filled]': 'filled'
     }
 })
 export class InputText {
@@ -18,7 +20,7 @@ export class InputText {
     
     focus: boolean;
     
-    constructor(private el: ElementRef) {}
+    constructor(public el: ElementRef) {}
     
     @HostListener('mouseover', ['$event']) 
     onMouseover(e) {
@@ -40,7 +42,18 @@ export class InputText {
         this.focus = false;
     }
     
-    isDisabled() {
+    get disabled(): boolean {
         return this.el.nativeElement.disabled;
     }
+    
+    get filled(): boolean {
+        return this.el.nativeElement.value&&this.el.nativeElement.value.length;
+    }
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [InputText],
+    declarations: [InputText]
+})
+export class InputTextModule { }

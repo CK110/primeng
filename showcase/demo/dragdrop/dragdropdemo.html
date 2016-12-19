@@ -1,11 +1,11 @@
-<div class="ContentSideSections">
+<div class="content-section">
     <div>
-        <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">Drag and Drop</span>
-        <span class="defaultText">pDraggable and pDroppable directives apply drag-drop behaviors to any element.</span>
+        <span class="feature-title">Drag and Drop</span>
+        <span>pDraggable and pDroppable directives apply drag-drop behaviors to any element.</span>
     </div>
 </div>
 
-<div class="ContentSideSections Implementation">
+<div class="content-section implementation">
     <h3 class="first">Drag Only</h3>
     <div pDraggable="pnl"  dragHandle=".ui-panel-titlebar">
         <p-panel header="Drag Header">
@@ -42,19 +42,19 @@
     </div>
 </div>
 
-<div class="ContentSideSections Source">
+<div class="content-section source">
     <p-tabView effect="fade">
         <p-tabPanel header="Documentation">
             <h3>Import</h3>
 <pre>
 <code class="language-typescript" pCode>
-import {Draggable,Droppable} from 'primeng/primeng';
+import &#123;DragDropModule&#125; from 'primeng/primeng';
 </code>
 </pre>
 
             <h3>Getting Started</h3>
             <p>pDraggable and pDroppable are attached to a target element to add drag-drop behavior. The value of a Directive attribute is required 
-            and it defines the scope to match draggables with droppables.</p>
+            and it defines the scope to match draggables with droppables. Droppable scope can also be an array to accept multiple droppables.</p>
             
 <pre>
 <code class="language-markup" pCode>
@@ -243,7 +243,7 @@ import {Draggable,Droppable} from 'primeng/primeng';
             &lt;/ul&gt;
         &lt;/div&gt;
         &lt;div class="ui-grid-col-6 ui-widget-content" pDroppable="cars" (onDrop)="drop($event)"
-                [ngClass]="{'ui-state-highlight':draggedCar}"&gt;
+                [ngClass]="&#123;'ui-state-highlight':draggedCar&#125;"&gt;
             &lt;p-dataTable [value]="selectedCars"&gt;
                 &lt;p-column field="vin" header="Vin"&gt;&lt;/p-column&gt;
                 &lt;p-column field="year" header="Year"&gt;&lt;/p-column&gt;
@@ -258,7 +258,7 @@ import {Draggable,Droppable} from 'primeng/primeng';
 
 <pre>
 <code class="language-typescript" pCode>
-export class DragDropDemo {
+export class DragDropDemo &#123;
     
     availableCars: Car[];
     
@@ -266,41 +266,41 @@ export class DragDropDemo {
     
     draggedCar: Car;
     
-    constructor(private carService: CarService) { }
+    constructor(private carService: CarService) &#123; &#125;
     
-    ngOnInit() {
+    ngOnInit() &#123;
         this.selectedCars = [];
         this.carService.getCarsSmall().then(cars => this.availableCars = cars);
-    }
+    &#125;
     
-    dragStart(event,car: Car) {
+    dragStart(event,car: Car) &#123;
         this.draggedCar = car;
-    }
+    &#125;
     
-    drop(event) {
-        if(this.draggedCar) {
+    drop(event) &#123;
+        if(this.draggedCar) &#123;
             this.selectedCars.push(this.draggedCar);
             this.availableCars.splice(this.findIndex(this.draggedCar), 1);
             this.draggedCar = null;
-        }
-    }
+        &#125;
+    &#125;
     
-    dragEnd(event) {
+    dragEnd(event) &#123;
         this.draggedCar = null;
-    }
+    &#125;
     
-    findIndex(car: Car) {
+    findIndex(car: Car) &#123;
         let index = -1;
-        for(let i = 0; i < this.availableCars.length; i++) {
-            if(car.vin === this.availableCars[i].vin) {
+        for(let i = 0; i < this.availableCars.length; i++) &#123;
+            if(car.vin === this.availableCars[i].vin) &#123;
                 index = i;
                 break;
-            }
-        }
+            &#125;
+        &#125;
         return index;
-    }
+    &#125;
 
-}
+&#125;
 </code>
 </pre>
         </p-tabPanel>

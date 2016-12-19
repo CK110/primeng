@@ -1,4 +1,6 @@
-import {Component,AfterViewInit,AfterViewChecked,Input,Output,EventEmitter,Query,QueryList,ElementRef} from '@angular/core';
+import {NgModule,Component,AfterViewInit,AfterViewChecked,Input,Output,EventEmitter,ElementRef} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {CommonModule} from '@angular/common';
 import {DomHandler} from '../dom/domhandler';
 
 @Component({
@@ -15,7 +17,7 @@ import {DomHandler} from '../dom/domhandler';
             </div>
             <div>
                 <span class="ui-terminal-content-prompt">{{prompt}}</span>
-                <input #in type="text" [(ngModel)]="command" class="ui-terminal-input" autocomplete="off" (keydown)="handleCommand($event,container)" autofocus>
+                <input #in type="text" [(ngModel)]="command" class="ui-terminal-input" autocomplete="off" (keydown)="handleCommand($event)" autofocus>
             </div>
         </div>
     `,
@@ -39,11 +41,11 @@ export class Terminal implements AfterViewInit,AfterViewChecked {
     
     command: string;
     
-    container: any;
+    container: Element;
     
     commandProcessed: boolean;
     
-    constructor(private el: ElementRef, private domHandler: DomHandler) {}
+    constructor(public el: ElementRef, public domHandler: DomHandler) {}
     
     ngAfterViewInit() {
         this.container = this.domHandler.find(this.el.nativeElement, '.ui-terminal')[0];
@@ -59,21 +61,28 @@ export class Terminal implements AfterViewInit,AfterViewChecked {
     @Input()
     set response(value: string) {
         if(value) {
-            this.commands.push({text: this.command, response: value});
-            this.command = null;
+            this.commands[this.commands.length - 1].response = value;
             this.commandProcessed = true;
-            this.responseChange.emit(null);
         }
     }
     
-    handleCommand(event,container) {
+    handleCommand(event: KeyboardEvent) {
         if(event.keyCode == 13) {
+            this.commands.push({text: this.command});                    
             this.handler.emit({originalEvent: event, command: this.command});
+            this.command = '';
         }
     }
     
-    focus(element) {
+    focus(element: HTMLElement) {
         element.focus();
     }
     
 }
+
+@NgModule({
+    imports: [CommonModule,FormsModule],
+    exports: [Terminal],
+    declarations: [Terminal]
+})
+export class TerminalModule { }

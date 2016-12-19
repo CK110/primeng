@@ -1,11 +1,11 @@
-<div class="ContentSideSections">
+<div class="content-section">
     <div>
-        <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">Lightbox</span>
-        <span class="defaultText">LightBox is a modal overlay component to display images, videos, inline html content and iframes.</span>
+        <span class="feature-title">Lightbox</span>
+        <span>LightBox is a modal overlay component to display images, videos, inline html content and iframes.</span>
     </div>
 </div>
 
-<div class="ContentSideSections Implementation">
+<div class="content-section implementation">
     <h3 class="first">Basic</h3>
     <p-lightbox [images]="images"></p-lightbox>
 
@@ -18,13 +18,13 @@
     </p-lightbox>
 </div>
 
-<div class="ContentSideSections Source">
+<div class="content-section source">
     <p-tabView effect="fade">
         <p-tabPanel header="Documentation">
             <h3>Import</h3>
 <pre>
 <code class="language-typescript" pCode>
-import {Lightbox} from 'primeng/primeng';
+import &#123;LightboxModule&#125; from 'primeng/primeng';
 </code>
 </pre>
 
@@ -39,18 +39,18 @@ import {Lightbox} from 'primeng/primeng';
 
 <pre>
 <code class="language-typescript" pCode>
-export class LightboxDemo {
+export class LightboxDemo &#123;
 
     images: any[];
 
-    constructor() {
+    constructor() &#123;
         this.images = [];
-        this.images.push({source:'showcase/resources/demo/images/sopranos/sopranos1.jpg', thumbnail: 'showcase/resources/demo/images/sopranos/sopranos1_small.jpg', title:'Sopranos 1'});
-        this.images.push({source:'showcase/resources/demo/images/sopranos/sopranos2.jpg', thumbnail: 'showcase/resources/demo/images/sopranos/sopranos2_small.jpg', title:'Sopranos 2'});
-        this.images.push({source:'showcase/resources/demo/images/sopranos/sopranos3.jpg', thumbnail: 'showcase/resources/demo/images/sopranos/sopranos3_small.jpg', title:'Sopranos 3'});
-        this.images.push({source:'showcase/resources/demo/images/sopranos/sopranos4.jpg', thumbnail: 'showcase/resources/demo/images/sopranos/sopranos4_small.jpg', title:'Sopranos 4'});
-    }
-}
+        this.images.push(&#123;source:'showcase/resources/demo/images/sopranos/sopranos1.jpg', thumbnail: 'showcase/resources/demo/images/sopranos/sopranos1_small.jpg', title:'Sopranos 1'&#125;);
+        this.images.push(&#123;source:'showcase/resources/demo/images/sopranos/sopranos2.jpg', thumbnail: 'showcase/resources/demo/images/sopranos/sopranos2_small.jpg', title:'Sopranos 2'&#125;);
+        this.images.push(&#123;source:'showcase/resources/demo/images/sopranos/sopranos3.jpg', thumbnail: 'showcase/resources/demo/images/sopranos/sopranos3_small.jpg', title:'Sopranos 3'&#125;);
+        this.images.push(&#123;source:'showcase/resources/demo/images/sopranos/sopranos4.jpg', thumbnail: 'showcase/resources/demo/images/sopranos/sopranos4_small.jpg', title:'Sopranos 4'&#125;);
+    &#125;
+&#125;
 </code>
 </pre>
             <p>Content mode is enabled by setting type property to "content", providing an anchor to open the lightbox and content to display inside lightbox.</p>
@@ -171,7 +171,7 @@ export class LightboxDemo {
             </div>
 
             <h3>Dependencies</h3>
-            <p>Native component that requires the css of PrimeUI Lightbox.</p>
+            <p>None.</p>
         </p-tabPanel>
 
         <p-tabPanel header="Source">
@@ -192,18 +192,18 @@ export class LightboxDemo {
 
 <pre>
 <code class="language-typescript" pCode>
-export class LightboxDemo {
+export class LightboxDemo &#123;
 
     images: any[];
 
-    constructor() {
+    constructor() &#123;
         this.images = [];
-        this.images.push({source:'showcase/resources/demo/images/sopranos/sopranos1.jpg', thumbnail: 'showcase/resources/demo/images/sopranos/sopranos1_small.jpg', title:'Sopranos 1'});
-        this.images.push({source:'showcase/resources/demo/images/sopranos/sopranos2.jpg', thumbnail: 'showcase/resources/demo/images/sopranos/sopranos2_small.jpg', title:'Sopranos 2'});
-        this.images.push({source:'showcase/resources/demo/images/sopranos/sopranos3.jpg', thumbnail: 'showcase/resources/demo/images/sopranos/sopranos3_small.jpg', title:'Sopranos 3'});
-        this.images.push({source:'showcase/resources/demo/images/sopranos/sopranos4.jpg', thumbnail: 'showcase/resources/demo/images/sopranos/sopranos4_small.jpg', title:'Sopranos 4'});
-    }
-}
+        this.images.push(&#123;source:'showcase/resources/demo/images/sopranos/sopranos1.jpg', thumbnail: 'showcase/resources/demo/images/sopranos/sopranos1_small.jpg', title:'Sopranos 1'&#125;);
+        this.images.push(&#123;source:'showcase/resources/demo/images/sopranos/sopranos2.jpg', thumbnail: 'showcase/resources/demo/images/sopranos/sopranos2_small.jpg', title:'Sopranos 2'&#125;);
+        this.images.push(&#123;source:'showcase/resources/demo/images/sopranos/sopranos3.jpg', thumbnail: 'showcase/resources/demo/images/sopranos/sopranos3_small.jpg', title:'Sopranos 3'&#125;);
+        this.images.push(&#123;source:'showcase/resources/demo/images/sopranos/sopranos4.jpg', thumbnail: 'showcase/resources/demo/images/sopranos/sopranos4_small.jpg', title:'Sopranos 4'&#125;);
+    &#125;
+&#125;
 </code>
 </pre>
         </p-tabPanel>

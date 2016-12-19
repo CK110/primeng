@@ -1,11 +1,11 @@
-<div class="ContentSideSections">
+<div class="content-section">
     <div>
-        <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">Toolbar</span>
-        <span class="defaultText">Toolbar is a grouping component for buttons and other content.</span>
+        <span class="feature-title">Toolbar</span>
+        <span>Toolbar is a grouping component for buttons and other content.</span>
     </div>
 </div>
 
-<div class="ContentSideSections Implementation">
+<div class="content-section implementation">
     <p-toolbar>
         <div class="ui-toolbar-group-left">
             <button pButton type="button" label="New" icon="fa-plus"></button>
@@ -13,13 +13,7 @@
                 
             <i class="fa fa-bars"></i>
             
-            <p-splitButton label="Save" icon="fa-check" (onClick)="save()">
-                <p-splitButtonItem icon="fa-close" label="Delete" (onClick)="delete()"></p-splitButtonItem>
-                <p-splitButtonItem icon="fa-refresh" label="Update" (onClick)="update()"></p-splitButtonItem>
-                <p-splitButtonItem icon="fa-link" label="Angular.io" url="http://angular.io"></p-splitButtonItem>
-                <p-splitButtonItem icon="fa-paint-brush" label="Theming" [url]="['Theming']"></p-splitButtonItem>
-            </p-splitButton>
-            
+            <p-splitButton label="Save" icon="fa-check" [model]="items"></p-splitButton>
         </div>
         
         <div class="ui-toolbar-group-right">
@@ -31,13 +25,13 @@
    </p-toolbar>
 </div>
 
-<div class="ContentSideSections Source">
+<div class="content-section source">
     <p-tabView effect="fade">
         <p-tabPanel header="Documentation">
             <h3>Import</h3>
 <pre>
 <code class="language-typescript" pCode>
-import {Toolbar} from 'primeng/primeng';
+import &#123;ToolbarModule&#125; from 'primeng/primeng';
 </code>
 </pre>
 
@@ -53,13 +47,7 @@ import {Toolbar} from 'primeng/primeng';
             
         &lt;i class="fa fa-bars"&gt;&lt;/i&gt;
         
-        &lt;p-splitButton label="Save" icon="fa-check" (onClick)="save()"&gt;
-            &lt;p-splitButtonItem icon="fa-close" label="Delete" (onClick)="delete()"&gt;&lt;/p-splitButtonItem&gt;
-            &lt;p-splitButtonItem icon="fa-refresh" label="Update" (onClick)="update()"&gt;&lt;/p-splitButtonItem&gt;
-            &lt;p-splitButtonItem icon="fa-link" label="Angular.io" url="http://angular.io"&gt;&lt;/p-splitButtonItem&gt;
-            &lt;p-splitButtonItem icon="fa-paint-brush" label="Theming" [url]="['Theming']"&gt;&lt;/p-splitButtonItem&gt;
-        &lt;/p-splitButton&gt;
-        
+        &lt;p-splitButton label="Save" icon="fa-check" [model]="items"&gt;&lt;/p-splitButton&gt;
     &lt;/div&gt;
     
     &lt;div class="ui-toolbar-group-right"&gt;
@@ -128,12 +116,10 @@ import {Toolbar} from 'primeng/primeng';
             </div>
 
             <h3>Dependencies</h3>
-            <p>Native component that only requires the css of PrimeUI Toolbar.</p>
+            <p>None.</p>
         </p-tabPanel>
 
         <p-tabPanel header="Source">
-<pre>
-<code class="language-markup" pCode>
 <pre>
 <code class="language-markup" pCode>
 &lt;p-toolbar&gt;
@@ -143,13 +129,7 @@ import {Toolbar} from 'primeng/primeng';
             
         &lt;i class="fa fa-bars"&gt;&lt;/i&gt;
         
-        &lt;p-splitButton label="Save" icon="fa-check" (onClick)="save()"&gt;
-            &lt;p-splitButtonItem icon="fa-close" label="Delete" (onClick)="delete()"&gt;&lt;/p-splitButtonItem&gt;
-            &lt;p-splitButtonItem icon="fa-refresh" label="Update" (onClick)="update()"&gt;&lt;/p-splitButtonItem&gt;
-            &lt;p-splitButtonItem icon="fa-link" label="Angular.io" url="http://angular.io"&gt;&lt;/p-splitButtonItem&gt;
-            &lt;p-splitButtonItem icon="fa-paint-brush" label="Theming" [url]="['Theming']"&gt;&lt;/p-splitButtonItem&gt;
-        &lt;/p-splitButton&gt;
-        
+        &lt;p-splitButton label="Save" icon="fa-check" (onClick)="save()" [model]="items"&gt;&lt;/p-splitButton&gt;
     &lt;/div&gt;
     
     &lt;div class="ui-toolbar-group-right"&gt;
@@ -159,8 +139,6 @@ import {Toolbar} from 'primeng/primeng';
         &lt;button pButton type="button" icon="fa-trash"&gt;&lt;/button&gt;
     &lt;/div&gt;
 &lt;/p-toolbar&gt;
-</code>
-</pre>
 </code>
 </pre>
         </p-tabPanel>

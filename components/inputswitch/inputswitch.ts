@@ -1,17 +1,19 @@
-import {Component,ElementRef,AfterViewInit,OnChanges,Input,forwardRef,Provider,EventEmitter,Output} from '@angular/core';
+import {NgModule,Component,ElementRef,AfterViewInit,AfterViewChecked,OnChanges,Input,forwardRef,EventEmitter,Output} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {NG_VALUE_ACCESSOR,ControlValueAccessor} from '@angular/forms';
 import {DomHandler} from '../dom/domhandler';
 
-const INPUTSWITCH_VALUE_ACCESSOR: Provider = new Provider(NG_VALUE_ACCESSOR, {
-    useExisting: forwardRef(() => InputSwitch),
-    multi: true
-});
+export const INPUTSWITCH_VALUE_ACCESSOR: any = {
+  provide: NG_VALUE_ACCESSOR,
+  useExisting: forwardRef(() => InputSwitch),
+  multi: true
+};
 
 @Component({
     selector: 'p-inputSwitch',
     template: `
         <div [ngClass]="{'ui-inputswitch ui-widget ui-widget-content ui-corner-all': true,
-            'ui-state-disabled': disabled}" (click)="toggle($event, in)"
+            'ui-state-disabled': disabled,'ui-inputswitch-checked':checked}" (click)="toggle($event, in)"
             [ngStyle]="style" [class]="styleClass">
             <div class="ui-inputswitch-off">
                 <span class="ui-inputswitch-offlabel">{{offLabel}}</span>
@@ -27,7 +29,7 @@ const INPUTSWITCH_VALUE_ACCESSOR: Provider = new Provider(NG_VALUE_ACCESSOR, {
     `,
     providers: [INPUTSWITCH_VALUE_ACCESSOR,DomHandler]
 })
-export class InputSwitch implements ControlValueAccessor, AfterViewInit {
+export class InputSwitch implements ControlValueAccessor,AfterViewInit,AfterViewChecked {
 
     @Input() onLabel: string = 'On';
 
@@ -49,23 +51,23 @@ export class InputSwitch implements ControlValueAccessor, AfterViewInit {
 
     onModelTouched: Function = () => {};
 
-    private container: any;
+    public container: any;
 
-    private handle: any;
+    public handle: any;
 
-    private onContainer: any;
+    public onContainer: any;
 
-    private offContainer: any;
+    public offContainer: any;
 
-    private onLabelChild: any;
+    public onLabelChild: any;
 
-    private offLabelChild: any;
+    public offLabelChild: any;
 
-    private offset: any;
+    public offset: any;
     
     initialized: boolean = false;
 
-    constructor(private el: ElementRef, private domHandler: DomHandler) {}
+    constructor(public el: ElementRef, public domHandler: DomHandler) {}
 
     ngAfterViewInit() {
         this.container = this.el.nativeElement.children[0];
@@ -74,7 +76,15 @@ export class InputSwitch implements ControlValueAccessor, AfterViewInit {
         this.offContainer = this.domHandler.findSingle(this.container,'div.ui-inputswitch-off');
         this.onLabelChild = this.domHandler.findSingle(this.onContainer,'span.ui-inputswitch-onlabel');
         this.offLabelChild = this.domHandler.findSingle(this.offContainer,'span.ui-inputswitch-offlabel');
-
+    }
+    
+    ngAfterViewChecked() {
+        if(this.container.offsetParent && !this.initialized) {
+            this.render();
+        }
+    }
+    
+    render() {
         let	onContainerWidth =  this.domHandler.width(this.onContainer),
             offContainerWidth = this.domHandler.width(this.offContainer),
             spanPadding	= this.domHandler.innerWidth(this.offLabelChild) - this.domHandler.width(this.offLabelChild),
@@ -172,4 +182,15 @@ export class InputSwitch implements ControlValueAccessor, AfterViewInit {
     registerOnTouched(fn: Function): void {
         this.onModelTouched = fn;
     }
+    
+    setDisabledState(val: boolean): void {
+        this.disabled = val;
+    }
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [InputSwitch],
+    declarations: [InputSwitch]
+})
+export class InputSwitchModule { }

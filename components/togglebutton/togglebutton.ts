@@ -1,17 +1,22 @@
-import {Component,Input,Output,EventEmitter,forwardRef,Provider} from '@angular/core';
+import {NgModule,Component,Input,Output,EventEmitter,forwardRef} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {NG_VALUE_ACCESSOR, ControlValueAccessor} from '@angular/forms';
 
-const TOGGLEBUTTON_VALUE_ACCESSOR: Provider = new Provider(NG_VALUE_ACCESSOR, {
-    useExisting: forwardRef(() => ToggleButton),
-    multi: true
-});
+export const TOGGLEBUTTON_VALUE_ACCESSOR: any = {
+  provide: NG_VALUE_ACCESSOR,
+  useExisting: forwardRef(() => ToggleButton),
+  multi: true
+};
 
 @Component({
     selector: 'p-toggleButton',
     template: `
         <div [ngClass]="{'ui-button ui-togglebutton ui-widget ui-state-default ui-corner-all': true, 'ui-button-text-only': (!onIcon&&!offIcon), 'ui-button-text-icon-left': (onIcon&&offIcon),
-                'ui-state-active': checked, 'ui-state-hover': hover&&!disabled, 'ui-state-disabled': disabled}" [ngStyle]="style" [class]="styleClass" 
+                'ui-state-active': checked,'ui-state-focus': focus, 'ui-state-hover': hover&&!disabled, 'ui-state-disabled': disabled}" [ngStyle]="style" [class]="styleClass" 
                 (click)="toggle($event)" (mouseenter)="hover=true" (mouseleave)="hover=false">
+            <div class="ui-helper-hidden-accessible">
+                <input type="checkbox" [checked]="checked" (focus)="onFocus()" (blur)="onBlur()">
+            </div>
             <span *ngIf="onIcon||offIcon" [class]="getIconClass()"></span>
             <span class="ui-button-text ui-unselectable-text">{{checked ? onLabel : offLabel}}</span>
         </div>
@@ -37,19 +42,21 @@ export class ToggleButton implements ControlValueAccessor {
     @Output() onChange: EventEmitter<any> = new EventEmitter();
     
     checked: boolean = false;
+
+    focus: boolean = false;
     
     onModelChange: Function = () => {};
     
     onModelTouched: Function = () => {};
     
-    private hover: boolean;
+    public hover: boolean;
 
     getIconClass() {
         let baseClass = 'ui-button-icon-left fa fa-fw';
         return baseClass + ' ' + (this.checked ? this.onIcon : this.offIcon);
     }
     
-    toggle(event) {
+    toggle(event: Event) {
         if(!this.disabled) {
             this.checked = !this.checked;
             this.onModelChange(this.checked);
@@ -59,6 +66,15 @@ export class ToggleButton implements ControlValueAccessor {
                 checked: this.checked
             })
         }
+    }
+
+    onFocus() {
+        this.focus = true;
+    }
+    
+    onBlur() {
+        this.focus = false;
+        this.onModelTouched();
     }
     
     writeValue(value: any) : void {
@@ -72,4 +88,15 @@ export class ToggleButton implements ControlValueAccessor {
     registerOnTouched(fn: Function): void {
         this.onModelTouched = fn;
     }
+    
+    setDisabledState(val: boolean): void {
+        this.disabled = val;
+    }
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [ToggleButton],
+    declarations: [ToggleButton]
+})
+export class ToggleButtonModule { }

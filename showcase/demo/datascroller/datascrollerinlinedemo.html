@@ -1,45 +1,43 @@
 <datascroller-demos></datascroller-demos>
 
-<div class="ContentSideSections">
+<div class="content-section">
     <div>
-        <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">DataScroller - <span class="subitem">Inline</span></span>
-        <span class="defaultText">DataScroller can listen scroll event of itself rather than document in inline mode.</span>
+        <span class="feature-title">DataScroller - <span class="subitem">Inline</span></span>
+        <span>DataScroller can listen scroll event of itself rather than document in inline mode.</span>
     </div>
 </div>
 
-<div class="ContentSideSections Implementation">
-    <p-dataScroller [value]="cars" [paginator]="true" [rows]="10" [inline]="true" scrollHeight="500px">
+<div class="content-section implementation">
+    <p-dataScroller [value]="cars" [rows]="10" [inline]="true" scrollHeight="500px">
         <header>
             Scroll Down to to Load More
         </header>
         <template let-car>
-            <li style="border-bottom:1px solid #D5D5D5;">
-                <div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px">
-                    <div class="ui-grid-row">
-                        <div class="ui-grid-col-3" style="text-align:center"><i class="fa fa-search" (click)="selectCar(car)" style="cursor:pointer;float:left;margin-top:40px"></i><img src="showcase/resources/demo/images/car/{{car.brand}}-big.gif"></div>
-                        <div class="ui-grid-col-9">
-                            <div class="ui-grid ui-grid-responsive ui-fluid">
-                                <div class="ui-grid-row">
-                                    <div class="ui-grid-col-2">Vin: </div>
-                                    <div class="ui-grid-col-10">{{car.vin}}</div>
-                                </div>
-                                <div class="ui-grid-row">
-                                    <div class="ui-grid-col-2">Year: </div>
-                                    <div class="ui-grid-col-10">{{car.year}}</div>
-                                </div>
-                                <div class="ui-grid-row">
-                                    <div class="ui-grid-col-2">Brand: </div>
-                                    <div class="ui-grid-col-10">{{car.brand}}</div>
-                                </div>
-                                <div class="ui-grid-row">
-                                    <div class="ui-grid-col-2">Color: </div>
-                                    <div class="ui-grid-col-10">{{car.color}}</div>
-                                </div>
+            <div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px;border-bottom:1px solid #D5D5D5;">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-3" style="text-align:center"><i class="fa fa-search" (click)="selectCar(car)" style="cursor:pointer;float:left;margin-top:40px"></i><img src="showcase/resources/demo/images/car/{{car.brand}}-big.gif"></div>
+                    <div class="ui-grid-col-9">
+                        <div class="ui-grid ui-grid-responsive ui-fluid">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-2">Vin: </div>
+                                <div class="ui-grid-col-10">{{car.vin}}</div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-2">Year: </div>
+                                <div class="ui-grid-col-10">{{car.year}}</div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-2">Brand: </div>
+                                <div class="ui-grid-col-10">{{car.brand}}</div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-2">Color: </div>
+                                <div class="ui-grid-col-10">{{car.color}}</div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </li>
+            </div>
         </template>
     </p-dataScroller>
         
@@ -68,12 +66,12 @@
     </p-dialog>
 </div>
 
-<div class="ContentSideSections Source">
+<div class="content-section source">
     <p-tabView effect="fade">
         <p-tabPanel header="datascrollerinlinedemo.ts">
 <pre>
 <code class="language-typescript" pCode>
-export class DataScrollerInlineDemo implements OnInit {
+export class DataScrollerInlineDemo implements OnInit &#123;
 
     cars: Car[];
     
@@ -81,21 +79,21 @@ export class DataScrollerInlineDemo implements OnInit {
     
     displayDialog: boolean;
 
-    constructor(private carService: CarService) { }
+    constructor(private carService: CarService) &#123; &#125;
 
-    ngOnInit() {
+    ngOnInit() &#123;
         this.carService.getCarsMedium().then(cars => this.cars = cars);
-    }
+    &#125;
     
-    selectCar(car: Car) {
+    selectCar(car: Car) &#123;
         this.selectedCar = car;
         this.displayDialog = true;
-    }
+    &#125;
     
-    onDialogHide() {
+    onDialogHide() &#123;
         this.selectedCar = null;
-    }
-}
+    &#125;
+&#125;
 </code>
 </pre>            
         </p-tabPanel>
@@ -103,38 +101,36 @@ export class DataScrollerInlineDemo implements OnInit {
         <p-tabPanel header="datascrollerinlinedemo.html">
 <pre>
 <code class="language-markup" pCode ngNonBindable>
-&lt;p-dataScroller [value]="cars" [paginator]="true" [rows]="10" [inline]="true" scrollHeight="500px"&gt;
+&lt;p-dataScroller [value]="cars" [rows]="10" [inline]="true" scrollHeight="500px"&gt;
     &lt;header&gt;
         Scroll Down to to Load More
     &lt;/header&gt;
     &lt;template let-car&gt;
-        &lt;li style="border-bottom:1px solid #D5D5D5;"&gt;
-            &lt;div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px"&gt;
-                &lt;div class="ui-grid-row"&gt;
-                    &lt;div class="ui-grid-col-3" style="text-align:center"&gt;&lt;i class="fa fa-search" (click)="selectCar(car)" style="cursor:pointer;float:left;margin-top:40px"&gt;&lt;/i&gt;&lt;img src="showcase/resources/demo/images/car/{{car.brand}}-big.gif"&gt;&lt;/div&gt;
-                    &lt;div class="ui-grid-col-9"&gt;
-                        &lt;div class="ui-grid ui-grid-responsive ui-fluid"&gt;
-                            &lt;div class="ui-grid-row"&gt;
-                                &lt;div class="ui-grid-col-2"&gt;Vin: &lt;/div&gt;
-                                &lt;div class="ui-grid-col-10"&gt;{{car.vin}}&lt;/div&gt;
-                            &lt;/div&gt;
-                            &lt;div class="ui-grid-row"&gt;
-                                &lt;div class="ui-grid-col-2"&gt;Year: &lt;/div&gt;
-                                &lt;div class="ui-grid-col-10"&gt;{{car.year}}&lt;/div&gt;
-                            &lt;/div&gt;
-                            &lt;div class="ui-grid-row"&gt;
-                                &lt;div class="ui-grid-col-2"&gt;Brand: &lt;/div&gt;
-                                &lt;div class="ui-grid-col-10"&gt;{{car.brand}}&lt;/div&gt;
-                            &lt;/div&gt;
-                            &lt;div class="ui-grid-row"&gt;
-                                &lt;div class="ui-grid-col-2"&gt;Color: &lt;/div&gt;
-                                &lt;div class="ui-grid-col-10"&gt;{{car.color}}&lt;/div&gt;
-                            &lt;/div&gt;
+        &lt;div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px;border-bottom:1px solid #D5D5D5"&gt;
+            &lt;div class="ui-grid-row"&gt;
+                &lt;div class="ui-grid-col-3" style="text-align:center"&gt;&lt;i class="fa fa-search" (click)="selectCar(car)" style="cursor:pointer;float:left;margin-top:40px"&gt;&lt;/i&gt;&lt;img src="showcase/resources/demo/images/car/{{car.brand}}-big.gif"&gt;&lt;/div&gt;
+                &lt;div class="ui-grid-col-9"&gt;
+                    &lt;div class="ui-grid ui-grid-responsive ui-fluid"&gt;
+                        &lt;div class="ui-grid-row"&gt;
+                            &lt;div class="ui-grid-col-2"&gt;Vin: &lt;/div&gt;
+                            &lt;div class="ui-grid-col-10"&gt;{{car.vin}}&lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;div class="ui-grid-row"&gt;
+                            &lt;div class="ui-grid-col-2"&gt;Year: &lt;/div&gt;
+                            &lt;div class="ui-grid-col-10"&gt;{{car.year}}&lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;div class="ui-grid-row"&gt;
+                            &lt;div class="ui-grid-col-2"&gt;Brand: &lt;/div&gt;
+                            &lt;div class="ui-grid-col-10"&gt;{{car.brand}}&lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;div class="ui-grid-row"&gt;
+                            &lt;div class="ui-grid-col-2"&gt;Color: &lt;/div&gt;
+                            &lt;div class="ui-grid-col-10"&gt;{{car.color}}&lt;/div&gt;
                         &lt;/div&gt;
                     &lt;/div&gt;
                 &lt;/div&gt;
             &lt;/div&gt;
-        &lt;/li&gt;
+        &lt;/div&gt;
     &lt;/template&gt;
 &lt;/p-dataScroller&gt;
     

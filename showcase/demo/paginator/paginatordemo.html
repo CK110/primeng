@@ -1,21 +1,21 @@
-<div class="ContentSideSections">
+<div class="content-section">
     <div>
-        <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">Paginator</span>
-        <span class="defaultText">Paginator is a generic widget to display content in paged format.</span>
+        <span class="feature-title">Paginator</span>
+        <span>Paginator is a generic widget to display content in paged format.</span>
     </div>
 </div>
 
-<div class="ContentSideSections Implementation">
+<div class="content-section implementation">
     <p-paginator rows="10" totalRecords="120" [rowsPerPageOptions]="[10,20,30]"></p-paginator>
 </div>
 
-<div class="ContentSideSections Source">
+<div class="content-section source">
     <p-tabView effect="fade">
         <p-tabPanel header="Documentation">
             <h3>Import</h3>
 <pre>
 <code class="language-typescript" pCode>
-import {Paginator} from 'primeng/primeng';
+import &#123;PaginatorModule&#125; from 'primeng/primeng';
 </code>
 </pre>
 
@@ -141,16 +141,16 @@ import {Paginator} from 'primeng/primeng';
 
 <pre>
 <code class="language-typescript" pCode>
-export class MyComponent {
+export class MyComponent &#123;
 
-    paginate(event) {
+    paginate(event) &#123;
         //event.first = Index of the first record
         //event.rows = Number of rows to display in new page
         //event.page = Index of the new page
         //event.pageCount = Total number of pages
-    }
+    &#125;
 
-}
+&#125;
 </code>
 </pre>
 
@@ -202,7 +202,7 @@ export class MyComponent {
             </div>
 
             <h3>Dependencies</h3>
-            <p>Native component that requires css of PrimeUI Paginator.</p>
+            <p>None.</p>
         </p-tabPanel>
 
         <p-tabPanel header="Source">

@@ -1,10 +1,8 @@
 import {Component} from '@angular/core';
-import {ROUTER_DIRECTIVES} from '@angular/router';
 
 @Component({
     selector: 'primeng-showcase',
-    templateUrl: 'showcase/app.component.html',
-    directives: [ROUTER_DIRECTIVES]
+    templateUrl: 'showcase/app.component.html'
 })
 export class AppComponent {
 

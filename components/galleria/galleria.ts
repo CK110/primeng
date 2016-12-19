@@ -1,4 +1,5 @@
-import {Component,ElementRef,AfterViewChecked,AfterViewInit,OnDestroy,Input,Output,IterableDiffers,EventEmitter} from '@angular/core';
+import {NgModule,Component,ElementRef,AfterViewChecked,AfterViewInit,OnDestroy,Input,Output,IterableDiffers,EventEmitter} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {DomHandler} from '../dom/domhandler';
 
 @Component({
@@ -63,29 +64,29 @@ export class Galleria implements AfterViewChecked,AfterViewInit,OnDestroy {
     
     slideshowActive: boolean;
     
-    private container: any;
+    public container: any;
     
-    private panelWrapper: any;
+    public panelWrapper: any;
     
-    private panels: any;
+    public panels: any;
     
-    private caption: any;
+    public caption: any;
     
-    private stripWrapper: any;
+    public stripWrapper: any;
     
-    private strip: any;
+    public strip: any;
     
-    private frames: any;
+    public frames: any;
     
-    private interval: any;
+    public interval: any;
     
-    private stripLeft: number = 0;
+    public stripLeft: number = 0;
     
-    private imagesChanged: boolean;
+    public imagesChanged: boolean;
     
-    private initialized: boolean;
+    public initialized: boolean;
 
-    constructor(private el: ElementRef, private domHandler: DomHandler, differs: IterableDiffers) {
+    constructor(public el: ElementRef, public domHandler: DomHandler, differs: IterableDiffers) {
         this.differ = differs.find([]).create(null);
     }
     
@@ -235,3 +236,10 @@ export class Galleria implements AfterViewChecked,AfterViewInit,OnDestroy {
     }
 
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [Galleria],
+    declarations: [Galleria]
+})
+export class GalleriaModule { }

@@ -1,14 +1,16 @@
-import {Component,ElementRef,AfterViewInit,Input,Output,EventEmitter,ContentChild,OnChanges,forwardRef,Provider} from '@angular/core';
-import {Header} from '../common'
+import {NgModule,Component,ElementRef,AfterViewInit,Input,Output,EventEmitter,ContentChild,OnChanges,forwardRef} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {Header} from '../common/shared'
 import {DomHandler} from '../dom/domhandler';
 import {NG_VALUE_ACCESSOR, ControlValueAccessor} from '@angular/forms';
 
 declare var Quill: any;
 
-const EDITOR_VALUE_ACCESSOR: Provider = new Provider(NG_VALUE_ACCESSOR, {
-    useExisting: forwardRef(() => Editor),
-    multi: true
-});
+export const EDITOR_VALUE_ACCESSOR: any = {
+  provide: NG_VALUE_ACCESSOR,
+  useExisting: forwardRef(() => Editor),
+  multi: true
+};
 
 @Component({
     selector: 'p-editor',
@@ -61,7 +63,6 @@ const EDITOR_VALUE_ACCESSOR: Provider = new Provider(NG_VALUE_ACCESSOR, {
             <div class="ui-editor-content" [ngStyle]="style"></div>
         </div>
     `,
-    directives: [Header],
     providers: [DomHandler,EDITOR_VALUE_ACCESSOR]
 })
 export class Editor implements AfterViewInit,ControlValueAccessor {
@@ -80,17 +81,17 @@ export class Editor implements AfterViewInit,ControlValueAccessor {
     
     @Input() readOnly: boolean;
     
+    @Input() formats: string[];
+    
     value: string;
     
     onModelChange: Function = () => {};
     
     onModelTouched: Function = () => {};
     
-    selfChange: boolean;
-
     quill: any;
     
-    constructor(private el: ElementRef, private domHandler: DomHandler) {}
+    constructor(public el: ElementRef, public domHandler: DomHandler) {}
 
     ngAfterViewInit() {
         let editorElement = this.domHandler.findSingle(this.el.nativeElement ,'div.ui-editor-content'); 
@@ -102,7 +103,8 @@ export class Editor implements AfterViewInit,ControlValueAccessor {
           },
           placeholder: this.placeholder,
           readOnly: this.readOnly,
-          theme: 'snow'
+          theme: 'snow',
+          formats: this.formats
         });
                 
         if(this.value) {
@@ -110,7 +112,6 @@ export class Editor implements AfterViewInit,ControlValueAccessor {
         }
         
         this.quill.on('text-change', (delta, source) => {
-            this.selfChange = true;
             let html = editorElement.children[0].innerHTML;
             let text = this.quill.getText();
             if(html == '<p><br></p>') {
@@ -138,17 +139,12 @@ export class Editor implements AfterViewInit,ControlValueAccessor {
         
     writeValue(value: any) : void {
         this.value = value;
-        
+                
         if(this.quill) {
-            if(this.selfChange) {
-                this.selfChange = false;
-            }
-            else {
-                if(value)
-                    this.quill.pasteHTML(value);
-                else
-                    this.quill.setText('');
-            }
+            if(value)
+                this.quill.pasteHTML(value);
+            else
+                this.quill.setText('');
         }
     }
     
@@ -160,3 +156,10 @@ export class Editor implements AfterViewInit,ControlValueAccessor {
         this.onModelTouched = fn;
     }
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [Editor],
+    declarations: [Editor]
+})
+export class EditorModule { }

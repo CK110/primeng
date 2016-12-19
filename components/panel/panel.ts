@@ -1,4 +1,6 @@
-import {Component,Input,Output,EventEmitter} from '@angular/core';
+import {NgModule,Component,Input,Output,EventEmitter,trigger,state,transition,style,animate,ElementRef} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {BlockableUI} from '../common/api';
 
 @Component({
     selector: 'p-panel',
@@ -12,13 +14,28 @@ import {Component,Input,Output,EventEmitter} from '@angular/core';
                     <span class="fa fa-fw" [ngClass]="{'fa-minus': !collapsed,'fa-plus':collapsed}"></span>
                 </a>
             </div>
-            <div class="ui-panel-content ui-widget-content" [style.display]="collapsed ? 'none' : 'block'">
-                <ng-content></ng-content>
+            <div class="ui-panel-content-wrapper" [@panelContent]="collapsed ? 'hidden' : 'visible'" 
+                [ngClass]="{'ui-panel-content-wrapper-overflown': collapsed||animating}">
+                <div class="ui-panel-content ui-widget-content">
+                    <ng-content></ng-content>
+                </div>
             </div>
         </div>
-    `
+    `,
+    animations: [
+        trigger('panelContent', [
+            state('hidden', style({
+                height: '0px'
+            })),
+            state('visible', style({
+                height: '*'
+            })),
+            transition('visible => hidden', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')),
+            transition('hidden => visible', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)'))
+        ])
+    ]
 })
-export class Panel {
+export class Panel implements BlockableUI {
 
     @Input() toggleable: boolean;
 
@@ -29,14 +46,21 @@ export class Panel {
     @Input() style: any;
         
     @Input() styleClass: string;
+    
+    @Output() collapsedChange: EventEmitter<any> = new EventEmitter();
 
     @Output() onBeforeToggle: EventEmitter<any> = new EventEmitter();
 
     @Output() onAfterToggle: EventEmitter<any> = new EventEmitter();
     
-    private hoverToggler: boolean;
+    public hoverToggler: boolean;
+    
+    public animating: boolean;
+    
+    constructor(private el: ElementRef) {}
     
     toggle(event) {
+        this.animating = true;
         this.onBeforeToggle.emit({originalEvent: event, collapsed: this.collapsed});
         
         if(this.toggleable) {            
@@ -48,15 +72,33 @@ export class Panel {
         
         this.onAfterToggle.emit({originalEvent: event, collapsed: this.collapsed});   
         
+        //TODO: Use onDone of animate callback instead with RC6
+        setTimeout(() => {
+            this.animating = false;
+        }, 400);
+        
         event.preventDefault();
     }
     
     expand(event) {
         this.collapsed = false;
+        this.collapsedChange.emit(this.collapsed);
     }
     
     collapse(event) {
         this.collapsed = true;
+        this.collapsedChange.emit(this.collapsed);
+    }
+    
+    getBlockableElement(): HTMLElement {
+        return this.el.nativeElement.children[0];
     }
 
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [Panel],
+    declarations: [Panel]
+})
+export class PanelModule { }

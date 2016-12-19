@@ -1,13 +1,15 @@
-import {Component,ElementRef,OnInit,AfterViewInit,AfterViewChecked,DoCheck,OnDestroy,Input,Output,Renderer,EventEmitter,
-            ContentChild,TemplateRef,IterableDiffers,forwardRef,Provider} from '@angular/core';
-import {SelectItem} from '../common';
+import {NgModule,Component,ElementRef,OnInit,AfterViewInit,AfterViewChecked,DoCheck,OnDestroy,Input,Output,Renderer,EventEmitter,
+            ContentChild,TemplateRef,IterableDiffers,forwardRef} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {SelectItem} from '../common/api';
 import {DomHandler} from '../dom/domhandler';
 import {NG_VALUE_ACCESSOR, ControlValueAccessor} from '@angular/forms';
 
-const MULTISELECT_VALUE_ACCESSOR: Provider = new Provider(NG_VALUE_ACCESSOR, {
-    useExisting: forwardRef(() => MultiSelect),
-    multi: true
-});
+export const MULTISELECT_VALUE_ACCESSOR: any = {
+  provide: NG_VALUE_ACCESSOR,
+  useExisting: forwardRef(() => MultiSelect),
+  multi: true
+};
 
 @Component({
     selector: 'p-multiSelect',
@@ -15,13 +17,13 @@ const MULTISELECT_VALUE_ACCESSOR: Provider = new Provider(NG_VALUE_ACCESSOR, {
         <div [ngClass]="{'ui-multiselect ui-widget ui-state-default ui-corner-all':true,'ui-state-focus': focus,'ui-state-disabled': disabled}" [ngStyle]="style" [class]="styleClass"
             (mouseenter)="onMouseenter($event)" (mouseleave)="onMouseleave($event)" (click)="onMouseclick($event,in)">
             <div class="ui-helper-hidden-accessible">
-                <input #in type="text" readonly="readonly" (focus)="onFocus($event)" (blur)="onBlur($event)">
+                <input #in type="text" readonly="readonly" (focus)="onFocus($event)" (blur)="onBlur($event)" [disabled]="disabled">
             </div>
             <div class="ui-multiselect-label-container" [title]="valuesAsString">
                 <label [ngClass]="{'ui-multiselect-label ui-corner-all':true,'ui-state-hover':hover,'ui-state-focus':focus}">{{valuesAsString}}</label>
             </div>
             <div [ngClass]="{'ui-multiselect-trigger ui-state-default ui-corner-right':true,'ui-state-hover':hover,'ui-state-focus':focus}">
-                <span class="fa fa-fw fa-caret-down"></span>
+                <span class="fa fa-fw fa-caret-down ui-c"></span>
             </div>
             <div class="ui-multiselect-panel ui-widget ui-widget-content ui-corner-all ui-shadow" [style.display]="overlayVisible ? 'block' : 'none'" (click)="panelClick=true">
                 <div class="ui-widget-header ui-corner-all ui-multiselect-header ui-helper-clearfix">
@@ -31,7 +33,7 @@ const MULTISELECT_VALUE_ACCESSOR: Provider = new Provider(NG_VALUE_ACCESSOR, {
                         </div>
                         <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default" [ngClass]="{'ui-state-hover':hoverToggleAll}"
                             (mouseenter)="hoverToggleAll=true" (mouseleave)="hoverToggleAll=false" (click)="toggleAll($event,cb)">
-                            <span class="ui-chkbox-icon ui-c" [ngClass]="{'fa fa-fw fa-check':isAllChecked()}"></span>
+                            <span class="ui-chkbox-icon ui-c" [ngClass]="{'fa fa-check':isAllChecked()}"></span>
                         </div>
                     </div>
                     <div class="ui-multiselect-filter-container">
@@ -53,7 +55,7 @@ const MULTISELECT_VALUE_ACCESSOR: Provider = new Provider(NG_VALUE_ACCESSOR, {
                                     <input type="checkbox" readonly="readonly" [checked]="isSelected(option.value)">
                                 </div>
                                 <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default" [ngClass]="{'ui-state-active':isSelected(option.value)}">
-                                    <span class="ui-chkbox-icon ui-c" [ngClass]="{'fa fa-fw fa-check':isSelected(option.value)}"></span>
+                                    <span class="ui-chkbox-icon ui-c" [ngClass]="{'fa fa-check':isSelected(option.value)}"></span>
                                 </div>
                             </div>
                             <label>{{option.label}}</label>
@@ -83,37 +85,39 @@ export class MultiSelect implements OnInit,AfterViewInit,AfterViewChecked,DoChec
     
     @Input() overlayVisible: boolean;
     
-    value: any[];
+    public value: any[];
     
-    onModelChange: Function = () => {};
+    public onModelChange: Function = () => {};
     
-    onModelTouched: Function = () => {};
+    public onModelTouched: Function = () => {};
     
-    private valuesAsString: string;
+    public valuesAsString: string;
     
-    private hover: boolean;
+    public hover: boolean;
     
-    private focus: boolean;
+    public focus: boolean;
     
-    private documentClickListener: any;
+    public documentClickListener: any;
     
-    private panel: any;
+    public panel: any;
     
-    private container: any;
+    public container: any;
     
-    private selfClick: boolean;
+    public selfClick: boolean;
     
-    private panelClick: boolean;
+    public panelClick: boolean;
     
-    private filterValue: string;
+    public filterValue: string;
     
-    private visibleOptions: SelectItem[];
+    public visibleOptions: SelectItem[];
     
-    private filtered: boolean;
+    public filtered: boolean;
     
-    differ: any;
+    public hoverToggleAll: boolean;
     
-    constructor(private el: ElementRef, private domHandler: DomHandler, private renderer: Renderer, differs: IterableDiffers) {
+    public differ: any;
+    
+    constructor(public el: ElementRef, public domHandler: DomHandler, public renderer: Renderer, differs: IterableDiffers) {
         this.differ = differs.find([]).create(null);
     }
     
@@ -164,6 +168,10 @@ export class MultiSelect implements OnInit,AfterViewInit,AfterViewChecked,DoChec
 
     registerOnTouched(fn: Function): void {
         this.onModelTouched = fn;
+    }
+    
+    setDisabledState(val: boolean): void {
+        this.disabled = val;
     }
     
     onItemClick(event, value) {
@@ -310,7 +318,7 @@ export class MultiSelect implements OnInit,AfterViewInit,AfterViewChecked,DoChec
         this.visibleOptions = [];
         for(let i = 0; i < this.options.length; i++) {
             let option = this.options[i];
-            if(option.label.toLowerCase().startsWith(this.filterValue.toLowerCase())) {
+            if(option.label.toLowerCase().indexOf(this.filterValue.toLowerCase()) > -1) {
                 this.visibleOptions.push(option);
             }
         }
@@ -351,3 +359,10 @@ export class MultiSelect implements OnInit,AfterViewInit,AfterViewChecked,DoChec
     }
 
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [MultiSelect],
+    declarations: [MultiSelect]
+})
+export class MultiSelectModule { }

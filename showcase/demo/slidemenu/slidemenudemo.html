@@ -1,11 +1,11 @@
-<div class="ContentSideSections">
+<div class="content-section">
     <div>
-        <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">Slide Menu</span>
-        <span class="defaultText">SlideMenu displays submenus with slide animation.</span>
+        <span class="feature-title">Slide Menu</span>
+        <span>SlideMenu displays submenus with slide animation.</span>
     </div>
 </div>
 
-<div class="ContentSideSections Implementation">
+<div class="content-section implementation">
     <h3 class="first">Default</h3>
     <p-slideMenu [model]="items"></p-slideMenu>
 
@@ -14,13 +14,13 @@
     <button #btn type="button" pButton icon="fa fa-list" label="Show" (click)="menu.toggle($event)"></button>
 </div>
 
-<div class="ContentSideSections Source">
+<div class="content-section source">
     <p-tabView effect="fade">
         <p-tabPanel header="Documentation">
             <h3>Import</h3>
 <pre>
 <code class="language-typescript" pCode>
-import {SlideMenu,MenuItem} from 'primeng/primeng';
+import &#123;SlideMenuModule,MenuItem&#125; from 'primeng/primeng';
 </code>
 </pre>
 
@@ -37,37 +37,37 @@ import {SlideMenu,MenuItem} from 'primeng/primeng';
 
 <pre>
 <code class="language-typescript" pCode>
-export class SlideMenuDemo {
+export class SlideMenuDemo &#123;
 
     private items: MenuItem[];
 
-    ngOnInit() {
+    ngOnInit() &#123;
         this.items = [
-            {
+            &#123;
                 label: 'File',
-                items: [{
+                items: [&#123;
                         label: 'New', 
                         icon: 'fa-plus',
                         items: [
-                            {label: 'Project'},
-                            {label: 'Other'},
+                            &#123;label: 'Project'&#125;,
+                            &#123;label: 'Other'&#125;,
                         ]
-                    },
-                    {label: 'Open'},
-                    {label: 'Quit'}
+                    &#125;,
+                    &#123;label: 'Open'&#125;,
+                    &#123;label: 'Quit'&#125;
                 ]
-            },
-            {
+            &#125;,
+            &#123;
                 label: 'Edit',
                 icon: 'fa-edit',
                 items: [
-                    {label: 'Undo', icon: 'fa-mail-forward'},
-                    {label: 'Redo', icon: 'fa-mail-reply'}
+                    &#123;label: 'Undo', icon: 'fa-mail-forward'&#125;,
+                    &#123;label: 'Redo', icon: 'fa-mail-reply'&#125;
                 ]
-            }
+            &#125;
         ];
-    }
-}
+    &#125;
+&#125;
 </code>
 </pre>
 
@@ -86,7 +86,7 @@ export class SlideMenuDemo {
                 See <a href="http://www.w3schools.com/cssref/css3_pr_transition-timing-function.asp">here</a> for possible alternative values.</p>
 <pre>
 <code class="language-markup" pCode>
-&lt;p-slideMenu #menu [model]="items" effectDuration="1s" easing="ease-in"&gt;&lt;/p-slideMenu&gt;
+&lt;p-slideMenu #menu [model]="items" effectDuration="1000" easing="ease-in"&gt;&lt;/p-slideMenu&gt;
 </code>
 </pre>
 
@@ -136,8 +136,8 @@ export class SlideMenuDemo {
                         <tr>
                             <td>effectDuration</td>
                             <td>any</td>
-                            <td>500ms</td>
-                            <td>Duration of the sliding animation in seconds or milliseconds.</td>
+                            <td>500</td>
+                            <td>Duration of the sliding animation in milliseconds.</td>
                         </tr>
                         <tr>
                            <td>backLabel</td>
@@ -243,7 +243,7 @@ export class SlideMenuDemo {
             </div>
 
             <h3>Dependencies</h3>
-            <p>Native component that requires the css of PrimeUI SlideMenu.</p>
+            <p>None.</p>
         </p-tabPanel>
 
         <p-tabPanel header="Source">
@@ -260,87 +260,87 @@ export class SlideMenuDemo {
 
 <pre>
 <code class="language-typescript" pCode>
-export class SlideMenuDemo {
+export class SlideMenuDemo &#123;
 
     private items: MenuItem[];
 
-    ngOnInit() {
+    ngOnInit() &#123;
         this.items = [
-            {
+            &#123;
                 label: 'File',
                 icon: 'fa-file-o',
-                items: [{
+                items: [&#123;
                         label: 'New', 
                         icon: 'fa-plus',
                         items: [
-                            {label: 'Project'},
-                            {label: 'Other'},
+                            &#123;label: 'Project'&#125;,
+                            &#123;label: 'Other'&#125;,
                         ]
-                    },
-                    {label: 'Open'},
-                    {label: 'Quit'}
+                    &#125;,
+                    &#123;label: 'Open'&#125;,
+                    &#123;label: 'Quit'&#125;
                 ]
-            },
-            {
+            &#125;,
+            &#123;
                 label: 'Edit',
                 icon: 'fa-edit',
                 items: [
-                    {label: 'Undo', icon: 'fa-mail-forward'},
-                    {label: 'Redo', icon: 'fa-mail-reply'}
+                    &#123;label: 'Undo', icon: 'fa-mail-forward'&#125;,
+                    &#123;label: 'Redo', icon: 'fa-mail-reply'&#125;
                 ]
-            },
-            {
+            &#125;,
+            &#123;
                 label: 'Help',
                 icon: 'fa-question',
                 items: [
-                    {
+                    &#123;
                         label: 'Contents'
-                    },
-                    {
+                    &#125;,
+                    &#123;
                         label: 'Search', 
                         icon: 'fa-search', 
                         items: [
-                            {
+                            &#123;
                                 label: 'Text', 
                                 items: [
-                                    {
+                                    &#123;
                                         label: 'Workspace'
-                                    }
+                                    &#125;
                                 ]
-                            },
-                            {
+                            &#125;,
+                            &#123;
                                 label: 'File'
-                            }
-                    ]}
+                            &#125;
+                    ]&#125;
                 ]
-            },
-            {
+            &#125;,
+            &#123;
                 label: 'Actions',
                 icon: 'fa-gear',
                 items: [
-                    {
+                    &#123;
                         label: 'Edit',
                         icon: 'fa-refresh',
                         items: [
-                            {label: 'Save', icon: 'fa-save'},
-                            {label: 'Update', icon: 'fa-save'},
+                            &#123;label: 'Save', icon: 'fa-save'&#125;,
+                            &#123;label: 'Update', icon: 'fa-save'&#125;,
                         ]
-                    },
-                    {
+                    &#125;,
+                    &#123;
                         label: 'Other',
                         icon: 'fa-phone',
                         items: [
-                            {label: 'Delete', icon: 'fa-minus'}
+                            &#123;label: 'Delete', icon: 'fa-minus'&#125;
                         ]
-                    }
+                    &#125;
                 ]
-            },
-            {
+            &#125;,
+            &#123;
                 label: 'Quit', icon: 'fa-minus'
-            }
+            &#125;
         ];
-    }
-}
+    &#125;
+&#125;
 </code>
 </pre>
         </p-tabPanel>

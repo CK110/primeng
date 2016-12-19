@@ -1,11 +1,11 @@
-<div class="ContentSideSections">
+<div class="content-section">
     <div>
-        <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">Menu</span>
-        <span class="defaultText">Menu is a navigation/command component that supports dynamic and static positioning.</span>
+        <span class="feature-title">Menu</span>
+        <span>Menu is a navigation/command component that supports dynamic and static positioning.</span>
     </div>
 </div>
 
-<div class="ContentSideSections Implementation">
+<div class="content-section implementation">
     <h3 class="first">Basic</h3>
     <p-menu [model]="items"></p-menu>
 
@@ -14,13 +14,13 @@
     <button type="button" pButton icon="fa fa-list" label="Show" (click)="menu.toggle($event)"></button>
 </div>
 
-<div class="ContentSideSections Source">
+<div class="content-section source">
     <p-tabView effect="fade">
         <p-tabPanel header="Documentation">
             <h3>Import</h3>
 <pre>
 <code class="language-typescript" pCode>
-import {Menu,MenuItem} from 'primeng/primeng';
+import &#123;MenuModule,MenuItem&#125; from 'primeng/primeng';
 </code>
 </pre>
 
@@ -37,18 +37,18 @@ import {Menu,MenuItem} from 'primeng/primeng';
 
 <pre>
 <code class="language-typescript" pCode>
-export class MenuDemo {
+export class MenuDemo &#123;
     
     private items: MenuItem[];
 
-    ngOnInit() {
+    ngOnInit() &#123;
         this.items = [
-                    {label: 'New', icon: 'fa-plus'},
-                    {label: 'Open', icon: 'fa-download'},
-                    {label: 'Undo', icon: 'fa-refresh'}
+                    &#123;label: 'New', icon: 'fa-plus'&#125;,
+                    &#123;label: 'Open', icon: 'fa-download'&#125;,
+                    &#123;label: 'Undo', icon: 'fa-refresh'&#125;
                 ];
-    }
-}
+    &#125;
+&#125;
 </code>
 </pre>
 
@@ -56,27 +56,27 @@ export class MenuDemo {
             <p>Menu supports 1 level of nesting via subitems of an item.</p>
 <pre>
 <code class="language-typescript" pCode>
-export class MenuDemo {
+export class MenuDemo &#123;
     
     private items: MenuItem[];
 
-    ngOnInit() {
-        this.items = [{
+    ngOnInit() &#123;
+        this.items = [&#123;
             label: 'File',
             items: [
-                {label: 'New', icon: 'fa-plus'},
-                {label: 'Open', icon: 'fa-download'}
+                &#123;label: 'New', icon: 'fa-plus'&#125;,
+                &#123;label: 'Open', icon: 'fa-download'&#125;
             ]
-        },
-        {
+        &#125;,
+        &#123;
             label: 'Edit',
             items: [
-                {label: 'Undo', icon: 'fa-refresh'},
-                {label: 'Redo', icon: 'fa-repeat'}
+                &#123;label: 'Undo', icon: 'fa-refresh'&#125;,
+                &#123;label: 'Redo', icon: 'fa-repeat'&#125;
             ]
-        }];
-    }
-}
+        &#125;];
+    &#125;
+&#125;
 </code>
 </pre>
 
@@ -125,6 +125,12 @@ export class MenuDemo {
                             <td>string</td>
                             <td>null</td>
                             <td>Style class of the component.</td>
+                        </tr>
+                        <tr>
+                            <td>appendTo</td>
+                            <td>any</td>
+                            <td>null</td>
+                            <td>Target element to attach the overlay, valid values are "body" or a local template variable of another element.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -196,7 +202,7 @@ export class MenuDemo {
             </div>
 
             <h3>Dependencies</h3>
-            <p>Native component that requires the css of PrimeUI Menu.</p>
+            <p>None.</p>
         </p-tabPanel>
 
         <p-tabPanel header="Source">
@@ -213,27 +219,27 @@ export class MenuDemo {
 
 <pre>
 <code class="language-typescript" pCode>
-export class MenuDemo {
+export class MenuDemo &#123;
     
     private items: MenuItem[];
 
-    ngOnInit() {
-        this.items = [{
+    ngOnInit() &#123;
+        this.items = [&#123;
             label: 'File',
             items: [
-                {label: 'New', icon: 'fa-plus'},
-                {label: 'Open', icon: 'fa-download'}
+                &#123;label: 'New', icon: 'fa-plus'&#125;,
+                &#123;label: 'Open', icon: 'fa-download'&#125;
             ]
-        },
-        {
+        &#125;,
+        &#123;
             label: 'Edit',
             items: [
-                {label: 'Undo', icon: 'fa-refresh'},
-                {label: 'Redo', icon: 'fa-repeat'}
+                &#123;label: 'Undo', icon: 'fa-refresh'&#125;,
+                &#123;label: 'Redo', icon: 'fa-repeat'&#125;
             ]
-        }];
-    }
-}
+        &#125;];
+    &#125;
+&#125;
 </code>
 </pre>
         </p-tabPanel>

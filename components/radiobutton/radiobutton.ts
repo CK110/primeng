@@ -1,65 +1,82 @@
-import {Component,Input,Output,EventEmitter,forwardRef,Provider} from '@angular/core';
+import {NgModule,Component,Input,Output,AfterViewInit,ElementRef,EventEmitter,forwardRef,ViewChild} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {NG_VALUE_ACCESSOR, ControlValueAccessor} from '@angular/forms';
 
-const RADIO_VALUE_ACCESSOR: Provider = new Provider(NG_VALUE_ACCESSOR, {
-    useExisting: forwardRef(() => RadioButton),
-    multi: true
-});
+export const RADIO_VALUE_ACCESSOR: any = {
+  provide: NG_VALUE_ACCESSOR,
+  useExisting: forwardRef(() => RadioButton),
+  multi: true
+};
 
 @Component({
     selector: 'p-radioButton',
     template: `
         <div class="ui-radiobutton ui-widget">
             <div class="ui-helper-hidden-accessible">
-                <input type="radio" [attr.name]="name" [attr.value]="value" [checked]="checked" (blur)="onModelTouched()">
+                <input #rb type="radio" [attr.name]="name" [attr.value]="value" [checked]="checked" (change)="onChange($event)"
+                    (focus)="onFocus($event)" (blur)="onBlur($event)">
             </div>
-            <div class="ui-radiobutton-box ui-widget ui-radiobutton-relative ui-state-default" (click)="onclick()"
-                        (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()" [ngClass]="{'ui-state-hover':hover&&!disabled,'ui-state-active':checked,'ui-state-disabled':disabled}">
-                <span class="ui-radiobutton-icon" [ngClass]="{'fa fa-fw fa-circle':checked}"></span>
+            <div (click)="handleClick()" (mouseenter)="hover=true" (mouseleave)="hover=false"
+                [ngClass]="{'ui-radiobutton-box ui-widget ui-state-default':true,
+                'ui-state-hover':hover&&!disabled,'ui-state-active':rb.checked,'ui-state-disabled':disabled,'ui-state-focus':focused}">
+                <span class="ui-radiobutton-icon" [ngClass]="{'fa fa-circle':rb.checked}"></span>
             </div>
         </div>
+        <label class="ui-radiobutton-label" (click)="select()" *ngIf="label">{{label}}</label>
     `,
     providers: [RADIO_VALUE_ACCESSOR]
 })
-export class RadioButton implements ControlValueAccessor {
+export class RadioButton implements ControlValueAccessor,AfterViewInit {
 
     @Input() value: any;
 
     @Input() name: string;
 
     @Input() disabled: boolean;
+    
+    @Input() label: string;
 
-    @Output() click: EventEmitter<any> = new EventEmitter();
+    @Output() onClick: EventEmitter<any> = new EventEmitter();
     
-    model: any;
+    @ViewChild('rb') inputViewChild: ElementRef;
     
-    onModelChange: Function = () => {};
+    public input: HTMLInputElement;
+        
+    public onModelChange: Function = () => {};
     
-    onModelTouched: Function = () => {};
+    public onModelTouched: Function = () => {};
     
-    checked: boolean;
+    public checked: boolean;
     
-    private hover: boolean;
+    public hover: boolean;
+    
+    public focused: boolean;
+    
+    ngAfterViewInit() {
+        this.input = <HTMLInputElement> this.inputViewChild.nativeElement;
+    }
 
-    onclick() {
+    handleClick() {
         if(!this.disabled) {
-            this.click.emit(null);
+            this.onClick.emit(null);
+            this.select();
+        }
+    }
+    
+    select() {
+        if(!this.disabled) {
+            this.input.checked = true;
             this.checked = true;
             this.onModelChange(this.value);
         }
     }
-    
-    onMouseEnter() {
-        this.hover = true;
-    }
-    
-    onMouseLeave() {
-        this.hover = false;
-    }
+            
+    writeValue(value: any) : void {
+        this.checked = (value == this.value);
         
-    writeValue(model: any) : void {
-        this.model = model;
-        this.checked = (this.model == this.value);
+        if(this.input) {
+            this.input.checked = this.checked;
+        }
     }
     
     registerOnChange(fn: Function): void {
@@ -69,4 +86,28 @@ export class RadioButton implements ControlValueAccessor {
     registerOnTouched(fn: Function): void {
         this.onModelTouched = fn;
     }
+    
+    setDisabledState(val: boolean): void {
+        this.disabled = val;
+    }
+    
+    onFocus(event) {
+        this.focused = true;
+    }
+
+    onBlur(event) {
+        this.focused = false;
+        this.onModelTouched();
+    }
+    
+    onChange(event) {
+        this.select();
+    }
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [RadioButton],
+    declarations: [RadioButton]
+})
+export class RadioButtonModule { }

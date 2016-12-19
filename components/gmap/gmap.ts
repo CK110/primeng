@@ -1,4 +1,5 @@
-import {Component,ElementRef,OnInit,AfterViewInit,DoCheck,OnDestroy,Input,Output,EventEmitter,IterableDiffers,ChangeDetectorRef,NgZone} from '@angular/core';
+import {NgModule,Component,ElementRef,OnInit,AfterViewInit,DoCheck,OnDestroy,Input,Output,EventEmitter,IterableDiffers,ChangeDetectorRef,NgZone} from '@angular/core';
+import {CommonModule} from '@angular/common';
 
 declare var google: any;
 
@@ -30,7 +31,7 @@ export class GMap implements AfterViewInit,DoCheck {
     
     map: any;
 
-    constructor(private el: ElementRef,differs: IterableDiffers, private cd: ChangeDetectorRef, private zone:NgZone) {
+    constructor(public el: ElementRef,differs: IterableDiffers, public cd: ChangeDetectorRef, public zone:NgZone) {
         this.differ = differs.find([]).create(null);
     }
 
@@ -128,3 +129,10 @@ export class GMap implements AfterViewInit,DoCheck {
         return this.map;
     }
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [GMap],
+    declarations: [GMap]
+})
+export class GMapModule { }

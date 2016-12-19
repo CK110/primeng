@@ -1,11 +1,11 @@
-<div class="ContentSideSections">
+<div class="content-section">
     <div>
-        <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">Rating</span>
-        <span class="defaultText">Rating components is a star based selection input.</span>
+        <span class="feature-title">Rating</span>
+        <span>Rating components is a star based selection input.</span>
     </div>
 </div>
 
-<div class="ContentSideSections Implementation">
+<div class="content-section implementation">
     <h3 class="first">Basic {{val1}}</h3> 
     <p-rating [(ngModel)]="val1"></p-rating>
     <br />
@@ -27,13 +27,13 @@
     <br />
 </div>
 
-<div class="ContentSideSections Source">
+<div class="content-section source">
     <p-tabView effect="fade">
         <p-tabPanel header="Documentation">
             <h3>Import</h3>
 <pre>
 <code class="language-typescript" pCode>
-import {Rating} from 'primeng/primeng';
+import &#123;RatingModule&#125; from 'primeng/primeng';
 </code>
 </pre>
 
@@ -48,22 +48,22 @@ import {Rating} from 'primeng/primeng';
 
 <pre>
 <code class="language-typescript" pCode>
-export class ModelComponent {
+export class ModelComponent &#123;
 
     val: number;
 
-}
+&#125;
 </code>
 </pre>
 
             <p>Defining a default value would be enough to display the initial number of selected stars.</p>
 <pre>
 <code class="language-typescript" pCode>
-export class ModelComponent {
+export class ModelComponent &#123;
 
     val: number = 3;
 
-}
+&#125;
 </code>
 </pre>
 
@@ -174,7 +174,7 @@ export class ModelComponent {
                     </div>
 
                     <h3>Dependencies</h3>
-                    <p>Native component that requires css of PrimeUI Rating.</p>
+                    <p>None.</p>
                 </p-tabPanel>
 
                 <p-tabPanel header="Source">
@@ -199,7 +199,7 @@ export class ModelComponent {
 
 <pre>
 <code class="language-typescript" pCode>
-export class RatingDemo {
+export class RatingDemo &#123;
 
     val1: number;
 
@@ -211,14 +211,14 @@ export class RatingDemo {
 
     msg: string;
 
-    handleRate(event) {
+    handleRate(event) &#123;
         this.msg = "You have rated " + event.value;
-    }
+    &#125;
 
-    handleCancel(event) {
+    handleCancel(event) &#123;
         this.msg = "Rating Cancelled";
-    }
-}
+    &#125;
+&#125;
 </code>
 </pre>
                 </p-tabPanel>

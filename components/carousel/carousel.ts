@@ -1,18 +1,20 @@
-import {Component,ElementRef,OnInit,AfterViewInit,AfterViewChecked,DoCheck,OnDestroy,Input,Output,IterableDiffers,TemplateRef,ContentChild,Renderer} from '@angular/core';
+import {NgModule,Component,ElementRef,OnInit,AfterViewInit,AfterViewChecked,DoCheck,OnDestroy,Input,Output,IterableDiffers,TemplateRef,ContentChild,Renderer} from '@angular/core';
 import {DomHandler} from '../dom/domhandler';
+import {SharedModule} from '../common/shared';
+import {CommonModule} from '@angular/common';
 
 @Component({
     selector: 'p-carousel',
     template: `
         <div [ngClass]="{'ui-carousel ui-widget ui-widget-content ui-corner-all':true}" [ngStyle]="style" [class]="styleClass">
-            <div class="ui-carousel-header ui-widget-header">
-                <div class="ui-carousel-header-title">{{headerText}}</div>
+            <div class="ui-carousel-header ui-widget-header ui-corner-all">
+                <span class="ui-carousel-header-title">{{headerText}}</span>
                 <span class="ui-carousel-button ui-carousel-next-button fa fa-arrow-circle-right" (click)="onNextNav()" 
                         [ngClass]="{'ui-state-disabled':(page === (totalPages-1)) && !circular}"></span>
                 <span class="ui-carousel-button ui-carousel-prev-button fa fa-arrow-circle-left" (click)="onPrevNav()" 
                         [ngClass]="{'ui-state-disabled':(page === 0 && !circular)}"></span>
                 <div *ngIf="displayPageLinks" class="ui-carousel-page-links">
-                    <a href="#" class="ui-carousel-page-link fa fa-circle-o" *ngFor="let links of anchorPageLinks;let i=index" [ngClass]="{'fa-dot-circle-o':page===i}"></a>
+                    <a href="#" (click)="setPageWithLink($event,i)" class="ui-carousel-page-link fa fa-circle-o" *ngFor="let links of anchorPageLinks;let i=index" [ngClass]="{'fa-dot-circle-o':page===i}"></a>
                 </div>
                 <select *ngIf="displayPageDropdown" class="ui-carousel-dropdown ui-widget ui-state-default ui-corner-left" [value]="page" (change)="onDropdownChange($event.target.value)">
                     <option *ngFor="let option of selectDropdownOptions" [value]="option" [selected]="value == option">{{option+1}}</option>
@@ -25,7 +27,9 @@ import {DomHandler} from '../dom/domhandler';
             <div class="ui-carousel-viewport">
                 <ul class="ui-carousel-items" [style.left.px]="left" [style.transitionProperty]="'left'" 
                             [style.transitionDuration]="effectDuration" [style.transitionTimingFunction]="easing">
-                    <template ngFor [ngForOf]="value" [ngForTemplate]="itemTemplate"></template>
+                    <li *ngFor="let item of value" class="ui-carousel-item ui-widget-content ui-corner-all">
+                        <template [pTemplateWrapper]="itemTemplate" [item]="item"></template>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -62,37 +66,37 @@ export class Carousel implements OnInit,AfterViewChecked,AfterViewInit,DoCheck,O
     
     @ContentChild(TemplateRef) itemTemplate: TemplateRef<any>;
         
-    private container: any;    
+    public container: any;    
     
-    private left: any = 0;
+    public left: any = 0;
     
-    private viewport: any;
+    public viewport: any;
     
-    private itemsContainer: any;
+    public itemsContainer: any;
     
-    private items: any;
+    public items: any;
     
-    private columns: any;
+    public columns: any;
         
-    private page: number;
+    public page: number;
                     
-    private valuesChanged: any;
+    public valuesChanged: any;
     
-    private interval: any;
+    public interval: any;
     
-    private anchorPageLinks: any[];
+    public anchorPageLinks: any[];
     
-    private mobileDropdownOptions: any[];
+    public mobileDropdownOptions: any[];
     
-    private selectDropdownOptions: any[];
+    public selectDropdownOptions: any[];
     
-    private shrinked: boolean;
+    public shrinked: boolean;
     
     documentResponsiveListener: any;
     
     differ: any;
 
-    constructor(private el: ElementRef, private domHandler: DomHandler, differs: IterableDiffers, private renderer: Renderer) {
+    constructor(public el: ElementRef, public domHandler: DomHandler, differs: IterableDiffers, public renderer: Renderer) {
         this.differ = differs.find([]).create(null);
     }
     
@@ -216,6 +220,11 @@ export class Carousel implements OnInit,AfterViewChecked,AfterViewInit,DoCheck,O
             this.setPage(this.totalPages - 1);
     }
     
+    setPageWithLink(event, p: number) {
+        this.setPage(p);
+        event.preventDefault();
+    }
+    
     setPage(p, enforce?: boolean) {
         if(p !== this.page || enforce) {
             this.page = p;
@@ -288,5 +297,11 @@ export class Carousel implements OnInit,AfterViewChecked,AfterViewInit,DoCheck,O
             this.stopAutoplay();
         }
     }
-    
 }
+
+@NgModule({
+    imports: [CommonModule,SharedModule],
+    exports: [Carousel,SharedModule],
+    declarations: [Carousel]
+})
+export class CarouselModule { }

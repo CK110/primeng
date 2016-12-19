@@ -1,4 +1,6 @@
-import {Component,Input,Output,EventEmitter} from '@angular/core';
+import {NgModule,Component,Input,Output,EventEmitter,trigger,state,transition,style,animate,ElementRef} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {BlockableUI} from '../common/api';
 
 @Component({
     selector: 'p-fieldset',
@@ -9,13 +11,28 @@ import {Component,Input,Output,EventEmitter} from '@angular/core';
                 <span *ngIf="toggleable" class="ui-fieldset-toggler fa fa-w" [ngClass]="{'fa-minus': !collapsed,'fa-plus':collapsed}"></span>
                 {{legend}}
             </legend>
-            <div class="ui-fieldset-content" [style.display]="collapsed ? 'none' : 'block'">
-                <ng-content></ng-content>
+            <div class="ui-fieldset-content-wrapper" [@fieldsetContent]="collapsed ? 'hidden' : 'visible'" 
+                        [ngClass]="{'ui-fieldset-content-wrapper-overflown': collapsed||animating}">
+                <div class="ui-fieldset-content">
+                    <ng-content></ng-content>
+                </div>
             </div>
         </fieldset>
     `,
+    animations: [
+        trigger('fieldsetContent', [
+            state('hidden', style({
+                height: '0px'
+            })),
+            state('visible', style({
+                height: '*'
+            })),
+            transition('visible => hidden', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')),
+            transition('hidden => visible', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)'))
+        ])
+    ]
 })
-export class Fieldset {
+export class Fieldset implements BlockableUI {
 
     @Input() legend: string;
 
@@ -31,7 +48,11 @@ export class Fieldset {
         
     @Input() styleClass: string
     
-    private hover: boolean;
+    public hover: boolean;
+    
+    public animating: boolean;
+    
+    constructor(private el: ElementRef) {}
     
     onLegendMouseenter(event) {
         if(this.toggleable) {
@@ -47,6 +68,7 @@ export class Fieldset {
     
     toggle(event) {
         if(this.toggleable) {
+            this.animating = true;
             this.onBeforeToggle.emit({originalEvent: event, collapsed: this.collapsed});
             
             if(this.collapsed)
@@ -55,6 +77,11 @@ export class Fieldset {
                 this.collapse(event);
                 
             this.onAfterToggle.emit({originalEvent: event, collapsed: this.collapsed});   
+            
+            //TODO: Use onDone of animate callback instead with RC6
+            setTimeout(() => {
+                this.animating = false;
+            }, 400);
         }
     }
     
@@ -65,5 +92,16 @@ export class Fieldset {
     collapse(event) {
         this.collapsed = true;
     }
+    
+    getBlockableElement(): HTMLElement {
+        return this.el.nativeElement.children[0];
+    }
 
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [Fieldset],
+    declarations: [Fieldset]
+})
+export class FieldsetModule { }

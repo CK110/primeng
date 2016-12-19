@@ -1,45 +1,41 @@
-<datatable-demos></datatable-demos>
-
-<div class="ContentSideSections">
+<div class="content-section">
     <div>
-        <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">DataList</span>
-        <span class="defaultText">DataList displays data in list layout.</span>
+        <span class="feature-title">DataList</span>
+        <span>DataList displays data in list layout.</span>
     </div>
 </div>
 
-<div class="ContentSideSections Implementation">
+<div class="content-section implementation">
     <p-dataList [value]="cars" [paginator]="true" [rows]="5">
         <header>
             List of Cars
         </header>
         <template let-car>
-            <li style="border-bottom:1px solid #D5D5D5;">
-                <div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px">
-                    <div class="ui-grid-row">
-                        <div class="ui-grid-col-3" style="text-align:center"><i class="fa fa-search" (click)="selectCar(car)" style="cursor:pointer;float:left;margin-top:40px"></i><img src="showcase/resources/demo/images/car/{{car.brand}}-big.gif"></div>
-                        <div class="ui-grid-col-9">
-                            <div class="ui-grid ui-grid-responsive ui-fluid">
-                                <div class="ui-grid-row">
-                                    <div class="ui-grid-col-2">Vin: </div>
-                                    <div class="ui-grid-col-10">{{car.vin}}</div>
-                                </div>
-                                <div class="ui-grid-row">
-                                    <div class="ui-grid-col-2">Year: </div>
-                                    <div class="ui-grid-col-10">{{car.year}}</div>
-                                </div>
-                                <div class="ui-grid-row">
-                                    <div class="ui-grid-col-2">Brand: </div>
-                                    <div class="ui-grid-col-10">{{car.brand}}</div>
-                                </div>
-                                <div class="ui-grid-row">
-                                    <div class="ui-grid-col-2">Color: </div>
-                                    <div class="ui-grid-col-10">{{car.color}}</div>
-                                </div>
+            <div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px;border-bottom:1px solid #D5D5D5;">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-3" style="text-align:center"><i class="fa fa-search" (click)="selectCar(car)" style="cursor:pointer;float:left;margin-top:40px"></i><img src="showcase/resources/demo/images/car/{{car.brand}}-big.gif"></div>
+                    <div class="ui-grid-col-9">
+                        <div class="ui-grid ui-grid-responsive ui-fluid">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-2">Vin: </div>
+                                <div class="ui-grid-col-10">{{car.vin}}</div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-2">Year: </div>
+                                <div class="ui-grid-col-10">{{car.year}}</div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-2">Brand: </div>
+                                <div class="ui-grid-col-10">{{car.brand}}</div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-2">Color: </div>
+                                <div class="ui-grid-col-10">{{car.color}}</div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </li>
+            </div>
         </template>
     </p-dataList>
         
@@ -68,63 +64,68 @@
     </p-dialog>
 </div>
 
-<div class="ContentSideSections Source">
+<div class="content-section source">
     <p-tabView effect="fade">
         <p-tabPanel header="Documentation">
             <h3>Import</h3>
 <pre>
 <code class="language-typescript" pCode>
-import {DataList} from 'primeng/primeng';
+import &#123;DataListModule&#125; from 'primeng/primeng';
 </code>
 </pre>
 
             <h3>Getting Started</h3>
-            <p>DataList requires a collection of items as its value and a template to display each item. Template should contain a li element as a wrapper. </p><p>Throughout the samples, a car interface having vin, brand, year and color properties are used to define an object to be displayed by the datalist. Cars are loaded by a CarService that connects to a server to fetch the cars with a Promise.</p>
+            <p>DataList requires a collection of items as its value and a template content to display
+                where each item can be accessed using the implicit variable.</p>
+                
+            <p>Throughout the samples, a car interface having vin, brand, year and color properties are 
+                used to define an object to be displayed by the datalist.  Cars are loaded by a CarService that 
+                connects to a server to fetch the cars with a Promise.</p>
 <pre>
 <code class="language-typescript" pCode>
-export interface Car {
+export interface Car &#123;
     vin;
     year;
     brand;
     color;
-}
+&#125;
 </code>
 </pre>
 
 <pre>
 <code class="language-typescript" pCode>
-import {Injectable} from 'angular2/core';
-import {Http, Response} from 'angular2/http';
-import {Car} from '../domain/car';
+import &#123;Injectable&#125; from 'angular2/core';
+import &#123;Http, Response&#125; from 'angular2/http';
+import &#123;Car&#125; from '../domain/car';
     
 @Injectable()
-export class CarService {
+export class CarService &#123;
     
-    constructor(private http: Http) {}
+    constructor(private http: Http) &#123;&#125;
 
-    getCarsLarge() {
+    getCarsLarge() &#123;
         return this.http.get('/showcase/resources/data/cars-large.json')
                     .toPromise()
                     .then(res => &lt;Car[]&gt; res.json().data)
-                    .then(data => { return data; });
-    }
-}
+                    .then(data => &#123; return data; &#125;);
+    &#125;
+&#125;
 </code>
 </pre>
         
             <p>Here is a sample DataList that displays a list of cars.</p>
 <pre>
 <code class="language-typescript" pCode>
-export class DataListDemo implements OnInit {
+export class DataListDemo implements OnInit &#123;
 
     cars: Car[];
 
-    constructor(private carService: CarService) { }
+    constructor(private carService: CarService) &#123; &#125;
 
-    ngOnInit() {
+    ngOnInit() &#123;
         this.carService.getCarsLarge().then(cars => this.cars = cars);
-    }
-}
+    &#125;
+&#125;
 </code>
 </pre>
 
@@ -132,9 +133,18 @@ export class DataListDemo implements OnInit {
 <code class="language-markup" pCode>
 &lt;p-dataList [value]="cars"&gt;
     &lt;template let-car&gt;
-        &lt;li&gt;
-            Car content
-        &lt;/li&gt;
+        Car content
+    &lt;/template&gt;
+&lt;/p-dataList&gt;
+</code>
+</pre>
+
+            <p>Index of the row is available at the template.</p>
+<pre>
+<code class="language-markup" pCode>
+&lt;p-dataList [value]="cars"&gt;
+    &lt;template let-car let-i="index"&gt;
+        Car content for {{i}}
     &lt;/template&gt;
 &lt;/p-dataList&gt;
 </code>
@@ -144,8 +154,8 @@ export class DataListDemo implements OnInit {
             <p>Header and Footer are the two sections aka facets that are capable of displaying custom content.</p>
 <pre>
 <code class="language-typescript" pCode>
-import {Header} from 'primeng/primeng';
-import {Footer} from 'primeng/primeng';
+import &#123;Header&#125; from 'primeng/primeng';
+import &#123;Footer&#125; from 'primeng/primeng';
 </code>
 </pre>
 <pre>
@@ -154,9 +164,7 @@ import {Footer} from 'primeng/primeng';
     &lt;header&gt;List of Cars&lt;/header&gt;
     &lt;footer&gt;Choose from the list.&lt;/footer&gt;
     &lt;template let-car&gt;
-        &lt;li&gt;
-            Car content
-        &lt;/li&gt;
+        Car content
     &lt;/template&gt;
 &lt;/p-dataList&gt;
 </code>
@@ -169,9 +177,7 @@ import {Footer} from 'primeng/primeng';
 <code class="language-markup" pCode>
 &lt;p-dataList [value]="cars" [paginator]="true" [rows]="10"&gt;
     &lt;template let-car&gt;
-        &lt;li&gt;
-            Car content
-        &lt;/li&gt;
+        Car content
     &lt;/template&gt;
 &lt;/p-dataList&gt;
 </code>
@@ -187,9 +193,7 @@ import {Footer} from 'primeng/primeng';
 <code class="language-markup" pCode>
 &lt;p-dataList [value]="cars" [paginator]="true" [rows]="9" [lazy]="true" (onLazyLoad)="loadData($event)" [totalRecords]="totalRecords"&gt;
     &lt;template let-car&gt;
-        &lt;li&gt;
-            Car content
-        &lt;/li&gt;
+        Car content
     &lt;/template&gt;
 &lt;/p-dataList&gt;
 </code>
@@ -197,10 +201,10 @@ import {Footer} from 'primeng/primeng';
 
 <pre>
 <code class="language-typescript" pCode>
-loadData(event) {
+loadData(event) &#123;
     //event.first = First row offset
     //event.rows = Number of rows per page
-}
+&#125;
 </code>
 </pre>
 
@@ -270,6 +274,12 @@ loadData(event) {
                             <td>null</td>
                             <td>Style class of the component.</td>
                         </tr>
+                        <tr>
+                            <td>paginatorPosition</td>
+                            <td>string</td>
+                            <td>bottom</td>
+                            <td>Position of the paginator, options are "top","bottom" or "both".</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -331,7 +341,7 @@ loadData(event) {
             </div>
 
             <h3>Dependencies</h3>
-            <p>Native component that requires css of PrimeUI DataList.</p>
+            <p>None.</p>
         </p-tabPanel>
 
         <p-tabPanel header="Source">
@@ -342,33 +352,31 @@ loadData(event) {
         List of Cars
     &lt;/header&gt;
     &lt;template let-car&gt;
-        &lt;li style="border-bottom:1px solid #D5D5D5;"&gt;
-            &lt;div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px"&gt;
-                &lt;div class="ui-grid-row"&gt;
-                    &lt;div class="ui-grid-col-3" style="text-align:center"&gt;&lt;i class="fa fa-search" (click)="selectCar(car)" style="cursor:pointer;float:left;margin-top:40px"&gt;&lt;/i&gt;&lt;img src="showcase/resources/demo/images/car/{{car.brand}}-big.gif"&gt;&lt;/div&gt;
-                    &lt;div class="ui-grid-col-9"&gt;
-                        &lt;div class="ui-grid ui-grid-responsive ui-fluid"&gt;
-                            &lt;div class="ui-grid-row"&gt;
-                                &lt;div class="ui-grid-col-2"&gt;Vin: &lt;/div&gt;
-                                &lt;div class="ui-grid-col-10"&gt;{{car.vin}}&lt;/div&gt;
-                            &lt;/div&gt;
-                            &lt;div class="ui-grid-row"&gt;
-                                &lt;div class="ui-grid-col-2"&gt;Year: &lt;/div&gt;
-                                &lt;div class="ui-grid-col-10"&gt;{{car.year}}&lt;/div&gt;
-                            &lt;/div&gt;
-                            &lt;div class="ui-grid-row"&gt;
-                                &lt;div class="ui-grid-col-2"&gt;Brand: &lt;/div&gt;
-                                &lt;div class="ui-grid-col-10"&gt;{{car.brand}}&lt;/div&gt;
-                            &lt;/div&gt;
-                            &lt;div class="ui-grid-row"&gt;
-                                &lt;div class="ui-grid-col-2"&gt;Color: &lt;/div&gt;
-                                &lt;div class="ui-grid-col-10"&gt;{{car.color}}&lt;/div&gt;
-                            &lt;/div&gt;
+        &lt;div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:16px;padding:20px;border-bottom:1px solid #D5D5D5;"&gt;
+            &lt;div class="ui-grid-row"&gt;
+                &lt;div class="ui-grid-col-3" style="text-align:center"&gt;&lt;i class="fa fa-search" (click)="selectCar(car)" style="cursor:pointer;float:left;margin-top:40px"&gt;&lt;/i&gt;&lt;img src="showcase/resources/demo/images/car/{{car.brand}}-big.gif"&gt;&lt;/div&gt;
+                &lt;div class="ui-grid-col-9"&gt;
+                    &lt;div class="ui-grid ui-grid-responsive ui-fluid"&gt;
+                        &lt;div class="ui-grid-row"&gt;
+                            &lt;div class="ui-grid-col-2"&gt;Vin: &lt;/div&gt;
+                            &lt;div class="ui-grid-col-10"&gt;{{car.vin}}&lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;div class="ui-grid-row"&gt;
+                            &lt;div class="ui-grid-col-2"&gt;Year: &lt;/div&gt;
+                            &lt;div class="ui-grid-col-10"&gt;{{car.year}}&lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;div class="ui-grid-row"&gt;
+                            &lt;div class="ui-grid-col-2"&gt;Brand: &lt;/div&gt;
+                            &lt;div class="ui-grid-col-10"&gt;{{car.brand}}&lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;div class="ui-grid-row"&gt;
+                            &lt;div class="ui-grid-col-2"&gt;Color: &lt;/div&gt;
+                            &lt;div class="ui-grid-col-10"&gt;{{car.color}}&lt;/div&gt;
                         &lt;/div&gt;
                     &lt;/div&gt;
                 &lt;/div&gt;
             &lt;/div&gt;
-        &lt;/li&gt;
+        &lt;/div&gt;
     &lt;/template&gt;
 &lt;/p-dataList&gt;
     
@@ -399,7 +407,7 @@ loadData(event) {
 </pre>
 <pre>
 <code class="language-typescript" pCode>
-export class DataListDemo implements OnInit {
+export class DataListDemo implements OnInit &#123;
 
     cars: Car[];
     
@@ -407,21 +415,21 @@ export class DataListDemo implements OnInit {
     
     displayDialog: boolean;
 
-    constructor(private carService: CarService) { }
+    constructor(private carService: CarService) &#123; &#125;
 
-    ngOnInit() {
+    ngOnInit() &#123;
         this.carService.getCarsLarge().then(cars => this.cars = cars);
-    }
+    &#125;
     
-    selectCar(car: Car) {
+    selectCar(car: Car) &#123;
         this.selectedCar = car;
         this.displayDialog = true;
-    }
+    &#125;
     
-    onDialogHide() {
+    onDialogHide() &#123;
         this.selectedCar = null;
-    }
-}
+    &#125;
+&#125;
 </code>
 </pre>
 

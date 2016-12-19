@@ -1,4 +1,5 @@
-import {Directive,ElementRef,OnDestroy,HostBinding,HostListener,Input} from '@angular/core';
+import {NgModule,Directive,ElementRef,OnDestroy,HostBinding,HostListener,Input} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {DomHandler} from '../dom/domhandler';
 
 @Directive({
@@ -14,46 +15,54 @@ export class Tooltip implements OnDestroy {
     @Input() tooltipPosition: string = 'right';
     
     @Input() tooltipEvent: string = 'hover';
+    
+    @Input() appendTo: any = 'body';
+    
+    @Input() positionStyle: string;
         
     container: any;
         
-    constructor(private el: ElementRef, private domHandler: DomHandler) {}
+    constructor(public el: ElementRef, public domHandler: DomHandler) {}
         
     @HostListener('mouseenter', ['$event']) 
-    onMouseEnter(e) {
+    onMouseEnter(e: Event) {
         if(this.tooltipEvent === 'hover') {
             this.show();
         }
     }
     
-    @HostListener('mouseout', ['$event']) 
-    onMouseLeave(e) {
+    @HostListener('mouseleave', ['$event']) 
+    onMouseLeave(e: Event) {
         if(this.tooltipEvent === 'hover') {
             this.hide();
         }
     }
     
     @HostListener('focus', ['$event']) 
-    onFocus(e) {
+    onFocus(e: Event) {
         if(this.tooltipEvent === 'focus') {
             this.show();
         }
     }
     
     @HostListener('blur', ['$event']) 
-    onBlur(e) {
+    onBlur(e: Event) {
         if(this.tooltipEvent === 'focus') {
             this.hide();
         }
     }
     
     show() {
+        if(!this.text) {
+            return;
+        }
+        
         this.create();
-        let rect = this.el.nativeElement.getBoundingClientRect();
-        let targetTop = rect.top + document.body.scrollTop;
-        let targetLeft = rect.left + document.body.scrollLeft;
-        let left;
-        let top;
+        let offset = this.domHandler.getOffset(this.el.nativeElement);
+        let targetTop = offset.top;
+        let targetLeft = offset.left;
+        let left: number;
+        let top: number;
         
         this.container.style.display = 'block';
 
@@ -87,8 +96,7 @@ export class Tooltip implements OnDestroy {
     
     hide() {
         this.container.style.display = 'none';
-        document.body.removeChild(this.container);
-        this.container = null;
+        this.ngOnDestroy();
     }
          
     create() {
@@ -103,15 +111,32 @@ export class Tooltip implements OnDestroy {
         tooltipText.className = 'ui-tooltip-text ui-shadow ui-corner-all';
         tooltipText.innerHTML = this.text;
         
+        if(this.positionStyle) {
+            this.container.style.position = this.positionStyle;
+        }
+        
         this.container.appendChild(tooltipText);
         
-        document.body.appendChild(this.container);
+        if(this.appendTo === 'body')
+            document.body.appendChild(this.container);
+        else
+            this.domHandler.appendChild(this.container, this.appendTo);
     }
     
     ngOnDestroy() {
         if(this.container && this.container.parentElement) {
-            document.body.removeChild(this.container);
+            if(this.appendTo === 'body')
+                document.body.removeChild(this.container);
+            else
+                this.domHandler.removeChild(this.container, this.appendTo);
         }
         this.container = null;
     }
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [Tooltip],
+    declarations: [Tooltip]
+})
+export class TooltipModule { }

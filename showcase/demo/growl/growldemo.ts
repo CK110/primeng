@@ -1,20 +1,18 @@
 import {Component} from '@angular/core';
-import {Growl} from '../../../components/growl/growl';
-import {CodeHighlighter} from '../../../components/codehighlighter/codehighlighter';
-import {TabView} from '../../../components/tabview/tabview';
-import {TabPanel} from '../../../components/tabview/tabpanel';
-import {Button} from '../../../components/button/button';
-import {SelectItem} from '../../../components/common';
-import {ROUTER_DIRECTIVES} from '@angular/router';
-import {Message} from '../../../components/common';
+import {SelectItem} from '../../../components/common/api';
+import {Message} from '../../../components/common/api';
 
 @Component({
-    templateUrl: 'showcase/demo/growl/growldemo.html',
-    directives: [Growl,TabPanel,TabView,Button,CodeHighlighter,ROUTER_DIRECTIVES]
+    templateUrl: 'showcase/demo/growl/growldemo.html'
 })
 export class GrowlDemo {
 
     msgs: Message[] = [];
+
+    showSuccess() {
+        this.msgs = [];
+        this.msgs.push({severity:'success', summary:'Success Message', detail:'Order submitted'});
+    }
 
     showInfo() {
         this.msgs = [];

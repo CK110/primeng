@@ -1,11 +1,11 @@
-<div class="ContentSideSections">
+<div class="content-section">
     <div>
-        <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">OverlayPanel</span>
-        <span class="defaultText">OverlayPanel is a container component that can overlay other components on page.</span>
+        <span class="feature-title">OverlayPanel</span>
+        <span>OverlayPanel is a container component that can overlay other components on page.</span>
     </div>
 </div>
 
-<div class="ContentSideSections Implementation">
+<div class="content-section implementation">
     <h3 class="first">Basic</h3>
     <p>Click the button to show the panel.</p>
     <button type="text" pButton label="Basic" (click)="op1.toggle($event)"></button>
@@ -19,7 +19,7 @@
     <i class="fa fa-search" (mouseenter)="op2.show($event)" style="font-size:24px"></i>
     
     <p-overlayPanel #op2 [showCloseIcon]="true" [dismissable]="false">
-        <p-dataTable [value]="cars1" [style]="{'width':'500px'}">
+        <p-dataTable [value]="cars1" [style]="&#123;'width':'500px'&#125;">
             <p-column field="vin" header="Vin" [sortable]="true"></p-column>
             <p-column field="year" header="Year" [sortable]="true"></p-column>
             <p-column field="brand" header="Brand" [sortable]="true"></p-column>
@@ -29,8 +29,8 @@
     
     <h3>DataTable Integration</h3>
     <p-dataTable [value]="cars2">
-        <p-column [style]="{'width':'10%','text-align':'center'}" header="Logo">
-            <template let-car="rowData">
+        <p-column [style]="&#123;'width':'10%','text-align':'center'&#125;" header="Logo">
+            <template let-car="rowData" pTemplate="body">
                 <button type="button" pButton (click)="selectCar($event,car,op3);" icon="fa-search"></button>
             </template>
         </p-column>
@@ -45,13 +45,13 @@
     </p-overlayPanel>
 </div>
 
-<div class="ContentSideSections Source">
+<div class="content-section source">
     <p-tabView effect="fade">
         <p-tabPanel header="Documentation">
             <h3>Import</h3>
 <pre>
 <code class="language-typescript" pCode>
-import {OverlayPanel} from 'primeng/primeng';
+import &#123;OverlayPanelModule&#125; from 'primeng/primeng';
 </code>
 </pre>
 
@@ -129,6 +129,12 @@ import {OverlayPanel} from 'primeng/primeng';
                             <td>null</td>
                             <td>Style class of the component.</td>
                         </tr>
+                        <tr>
+                            <td>appendTo</td>
+                            <td>any</td>
+                            <td>null</td>
+                            <td>Target element to attach the panel, valid values are "body" or a local template variable of another element.</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -155,12 +161,12 @@ import {OverlayPanel} from 'primeng/primeng';
                             <td>Callback to invoke after overlay is shown.</td>
                         </tr>
                         <tr>
-                            <td>onBeforeShow</td>
+                            <td>onBeforeHide</td>
                             <td>-</td>
                             <td>Callback to invoke before overlay is hidden.</td>
                         </tr>
                         <tr>
-                            <td>onAfterShow</td>
+                            <td>onAfterHide</td>
                             <td>-</td>
                             <td>Callback to invoke after overlay is hidden.</td>
                         </tr>
@@ -182,7 +188,7 @@ import {OverlayPanel} from 'primeng/primeng';
                         <tr>
                             <td>toggle</td>
                             <td>event: browser event <br>
-                                target?: target element to align the panel to
+                                target?: target element to align the panel, defaults to event.target
                             </td>
                             <td>Toggles the visibility of the panel.</td>
                         </tr>
@@ -230,7 +236,7 @@ import {OverlayPanel} from 'primeng/primeng';
             </div>
 
             <h3>Dependencies</h3>
-            <p>Native component that only requires the css of PrimeUI OverlayPanel.</p>
+            <p>None.</p>
         </p-tabPanel>
 
         <p-tabPanel header="Source">
@@ -249,7 +255,7 @@ import {OverlayPanel} from 'primeng/primeng';
 &lt;i class="fa fa-search" (mouseenter)="op2.show($event)" style="font-size:24px"&gt;&lt;/i&gt;
 
 &lt;p-overlayPanel #op2 [showCloseIcon]="true" [dismissable]="false"&gt;
-    &lt;p-dataTable [value]="cars1" [style]="{'width':'500px'}"&gt;
+    &lt;p-dataTable [value]="cars1" [style]="&#123;'width':'500px'&#125;"&gt;
         &lt;p-column field="vin" header="Vin" [sortable]="true"&gt;&lt;/p-column&gt;
         &lt;p-column field="year" header="Year" [sortable]="true"&gt;&lt;/p-column&gt;
         &lt;p-column field="brand" header="Brand" [sortable]="true"&gt;&lt;/p-column&gt;
@@ -259,8 +265,8 @@ import {OverlayPanel} from 'primeng/primeng';
 
 &lt;h3&gt;DataTable Integration&lt;/h3&gt;
 &lt;p-dataTable [value]="cars2"&gt;
-    &lt;p-column [style]="{'width':'10%','text-align':'center'}" header="Logo"&gt;
-        &lt;template let-car="rowData"&gt;
+    &lt;p-column [style]="&#123;'width':'10%','text-align':'center'&#125;" header="Logo"&gt;
+        &lt;template let-car="rowData" pTemplate="body"&gt;
             &lt;button type="button" pButton (click)="selectCar($event,car,op3);" icon="fa-search"&gt;&lt;/button&gt;
         &lt;/template&gt;
     &lt;/p-column&gt;
@@ -278,7 +284,7 @@ import {OverlayPanel} from 'primeng/primeng';
 
 <pre>
 <code class="language-typescript" pCode>
-export class OverlayPanelDemo {
+export class OverlayPanelDemo &#123;
 
     cars1: Car[];
     
@@ -286,18 +292,18 @@ export class OverlayPanelDemo {
     
     selectedCar: Car;
     
-    constructor(private carService: CarService) { }
+    constructor(private carService: CarService) &#123; &#125;
 
-    ngOnInit() {
+    ngOnInit() &#123;
         this.carService.getCarsSmall().then(cars => this.cars1 = cars);
         this.carService.getCarsSmall().then(cars => this.cars2 = cars);
-    }
+    &#125;
     
-    selectCar(event,car: Car, overlaypanel: OverlayPanel) {
+    selectCar(event,car: Car, overlaypanel: OverlayPanel) &#123;
         this.selectedCar = car;
         overlaypanel.toggle(event);
-    }
-}
+    &#125;
+&#125;
 </code>
 </pre>
         </p-tabPanel>

@@ -4,6 +4,7 @@ node_modules
 # demo
 showcase
 index.html
+upload.php
 
 # typescript
 *.ts
@@ -13,16 +14,21 @@ index.html
 .git
 .gitignore
 
-# type definition
-typings
-typings.json
-
 # config
 tsconfig.json
+tsconfig-aot.json
+webpack.config.js
+config
+gulpfile.js
+
+# aot
+aot
 
 # misc
+.github
 *.log
-systemjs.config.js
+prod
+.editorconfig
 
 
 

@@ -1,10 +1,12 @@
-import {Component,ElementRef,OnInit,Input,Output,EventEmitter,forwardRef,Provider} from '@angular/core';
+import {NgModule,Component,ElementRef,OnInit,Input,Output,EventEmitter,forwardRef} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {NG_VALUE_ACCESSOR, ControlValueAccessor} from '@angular/forms';
 
-const RATING_VALUE_ACCESSOR: Provider = new Provider(NG_VALUE_ACCESSOR, {
-    useExisting: forwardRef(() => Rating),
-    multi: true
-});
+export const RATING_VALUE_ACCESSOR: any = {
+  provide: NG_VALUE_ACCESSOR,
+  useExisting: forwardRef(() => Rating),
+  multi: true
+};
 
 @Component({
     selector: 'p-rating',
@@ -38,9 +40,9 @@ export class Rating implements ControlValueAccessor {
     
     onModelTouched: Function = () => {};
     
-    private starsArray: number[];
+    public starsArray: number[];
     
-    private hoverCancel: boolean;
+    public hoverCancel: boolean;
 
     ngOnInit() {
         this.starsArray = [];
@@ -81,4 +83,15 @@ export class Rating implements ControlValueAccessor {
     registerOnTouched(fn: Function): void {
         this.onModelTouched = fn;
     }
+    
+    setDisabledState(val: boolean): void {
+        this.disabled = val;
+    }
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [Rating],
+    declarations: [Rating]
+})
+export class RatingModule { }

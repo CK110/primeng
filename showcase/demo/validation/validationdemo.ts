@@ -1,23 +1,11 @@
-import {Component} from '@angular/core';
-import {FORM_DIRECTIVES,REACTIVE_FORM_DIRECTIVES,Validators,FormControl,FormGroup} from '@angular/forms';
-import {InputText} from '../../../components/inputtext/inputtext';
-import {Password} from '../../../components/password/password';
-import {Panel} from '../../../components/panel/panel';
-import {Button} from '../../../components/button/button';
-import {Dropdown} from '../../../components/dropdown/dropdown';
-import {SelectItem} from '../../../components/common';
-import {InputTextarea} from '../../../components/inputtextarea/inputtextarea';
-import {TabView} from '../../../components/tabview/tabview';
-import {TabPanel} from '../../../components/tabview/tabpanel';
-import {Growl} from '../../../components/growl/growl';
-import {CodeHighlighter} from '../../../components/codehighlighter/codehighlighter';
-import {Message} from '../../../components/common';
+import {Component,OnInit} from '@angular/core';
+import {Validators,FormControl,FormGroup,FormBuilder} from '@angular/forms';
+import {Message,SelectItem} from '../../../components/common/api';
 
 @Component({
-    templateUrl: 'showcase/demo/validation/validationdemo.html',
-    directives: [InputText,Password,Panel,Button,Dropdown,TabView,TabPanel,Growl,CodeHighlighter,InputTextarea,REACTIVE_FORM_DIRECTIVES]
+    templateUrl: 'showcase/demo/validation/validationdemo.html'
 })
-export class ValidationDemo {
+export class ValidationDemo implements OnInit {
     
     msgs: Message[] = [];
     
@@ -29,8 +17,10 @@ export class ValidationDemo {
         
     description: string;
     
+    constructor(private fb: FormBuilder) {}
+    
     ngOnInit() {
-        this.userform = new FormGroup({
+        this.userform = this.fb.group({
             'firstname': new FormControl('', Validators.required),
             'lastname': new FormControl('', Validators.required),
             'password': new FormControl('', [Validators.required, Validators.minLength(6)]),

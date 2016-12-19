@@ -1,4 +1,5 @@
-import {Component,ElementRef,Input,Output,Renderer,AfterViewInit,OnDestroy} from '@angular/core';
+import {NgModule,Component,ElementRef,Input,Output,Renderer,AfterViewInit,OnDestroy} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {DomHandler} from '../dom/domhandler';
 
 @Component({
@@ -47,27 +48,27 @@ export class Lightbox implements AfterViewInit,OnDestroy{
     
     @Input() effectDuration: any = '500ms';
                 
-    private visible: boolean;
+    public visible: boolean;
     
-    private loading: boolean;
+    public loading: boolean;
         
-    private currentImage: any;
+    public currentImage: any;
     
-    private captionText: string;
+    public captionText: string;
     
-    private zindex: any;
+    public zindex: any;
     
-    private panel: any;
+    public panel: any;
     
-    private index: number;
+    public index: number;
     
-    private mask: any;
+    public mask: any;
     
-    private preventDocumentClickListener: boolean;
+    public preventDocumentClickListener: boolean;
     
-    private documentClickListener: any;
+    public documentClickListener: any;
 
-    constructor(private el: ElementRef, private domHandler: DomHandler, private renderer: Renderer) {}
+    constructor(public el: ElementRef, public domHandler: DomHandler, public renderer: Renderer) {}
                 
     onImageClick(event,image,i,content) {
         this.index = i;
@@ -101,6 +102,7 @@ export class Lightbox implements AfterViewInit,OnDestroy{
     displayImage(image) {
         setTimeout(() => {
             this.currentImage = image;
+            this.captionText = image.title;
         }, 1000);
     }
     
@@ -203,3 +205,10 @@ export class Lightbox implements AfterViewInit,OnDestroy{
     }
         
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [Lightbox],
+    declarations: [Lightbox]
+})
+export class LightboxModule { }

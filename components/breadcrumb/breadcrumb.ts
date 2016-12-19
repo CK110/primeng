@@ -1,5 +1,6 @@
-import {Component,Input,OnDestroy,EventEmitter} from '@angular/core';
-import {MenuItem} from '../common';
+import {NgModule,Component,Input,OnDestroy,EventEmitter} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MenuItem} from '../common/api';
 import {Location} from '@angular/common';
 import {Router} from '@angular/router';
 
@@ -8,10 +9,11 @@ import {Router} from '@angular/router';
     template: `
         <div [class]="styleClass" [ngStyle]="style" [ngClass]="'ui-breadcrumb ui-widget ui-widget-header ui-helper-clearfix ui-corner-all'">
             <ul>
-                <li class="fa fa-home"></li>
+                <li class="fa fa-home" (click)="onHomeClick($event)"></li>
+                <li class="ui-breadcrumb-chevron fa fa-chevron-right" *ngIf="model"></li>
                 <template ngFor let-item let-end="last" [ngForOf]="model">
                     <li role="menuitem">
-                        <a [href]="item.url||'#'" class="ui-menuitem-link" (click)="itemClick($event, item)">
+                        <a [href]="item.url||'#'" class="ui-menuitem-link" (click)="itemClick($event, item)" [ngClass]="{'ui-state-disabled':item.disabled}">
                             <span class="ui-menuitem-text">{{item.label}}</span>
                         </a>
                     </li>
@@ -29,9 +31,16 @@ export class Breadcrumb implements OnDestroy {
 
     @Input() styleClass: string;
     
-    constructor(private router: Router) {}
+    @Input() home: MenuItem;
+    
+    constructor(public router: Router) {}
     
     itemClick(event, item: MenuItem) {
+        if(item.disabled) {
+            event.preventDefault();
+            return;
+        }
+        
         if(!item.url||item.routerLink) {
             event.preventDefault();
         }
@@ -42,11 +51,20 @@ export class Breadcrumb implements OnDestroy {
                 item.eventEmitter.subscribe(item.command);
             }
             
-            item.eventEmitter.emit(event);
+            item.eventEmitter.emit({
+                originalEvent: event,
+                item: item
+            });
         }
                 
         if(item.routerLink) {
             this.router.navigate(item.routerLink);
+        }
+    }
+    
+    onHomeClick(event) {
+        if(this.home) {
+            this.itemClick(event, this.home);
         }
     }
         
@@ -61,3 +79,10 @@ export class Breadcrumb implements OnDestroy {
     }
 
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [Breadcrumb],
+    declarations: [Breadcrumb]
+})
+export class BreadcrumbModule { }

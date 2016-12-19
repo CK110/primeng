@@ -1,18 +1,20 @@
-import {Component,ElementRef,AfterViewInit,OnDestroy,Input,Output,Renderer,EventEmitter} from '@angular/core';
+import {NgModule,Component,ElementRef,AfterViewInit,OnDestroy,Input,Output,Renderer,EventEmitter} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {DomHandler} from '../dom/domhandler';
-import {MenuItem} from '../common';
+import {MenuItem} from '../common/api';
 import {Location} from '@angular/common';
 import {Router} from '@angular/router';
 
 @Component({
     selector: 'p-menubarSub',
     template: `
-        <ul [ngClass]="{'ui-helper-reset':root, 'ui-widget-content ui-corner-all ui-helper-clearfix ui-menu-child ui-shadow':!root}" class="ui-menu-list"
+        <ul [ngClass]="{'ui-menubar-root-list ui-helper-clearfix':root, 'ui-widget-content ui-corner-all ui-helper-clearfix ui-menu-child ui-shadow':!root}" class="ui-menu-list"
             (click)="listClick($event)">
             <template ngFor let-child [ngForOf]="(root ? item : item.items)">
                 <li #item [ngClass]="{'ui-menuitem ui-widget ui-corner-all':true,'ui-menu-parent':child.items,'ui-menuitem-active':item==activeItem}"
-                    (mouseenter)="onItemMouseEnter($event, item)" (mouseleave)="onItemMouseLeave($event, item)">
-                    <a #link [href]="child.url||'#'" class="ui-menuitem-link ui-corner-all" [ngClass]="{'ui-state-hover':link==activeLink}" (click)="itemClick($event, child)">
+                    (mouseenter)="onItemMouseEnter($event,item,child)" (mouseleave)="onItemMouseLeave($event,item)">
+                    <a #link [href]="child.url||'#'" class="ui-menuitem-link ui-corner-all" 
+                        [ngClass]="{'ui-state-hover':link==activeLink&&!child.disabled,'ui-state-disabled':child.disabled}" (click)="itemClick($event, child)">
                         <span class="ui-submenu-icon fa fa-fw" *ngIf="child.items" [ngClass]="{'fa-caret-down':root,'fa-caret-right':!root}"></span>
                         <span class="ui-menuitem-icon fa fa-fw" *ngIf="child.icon" [ngClass]="child.icon"></span>
                         <span class="ui-menuitem-text">{{child.label}}</span>
@@ -22,7 +24,6 @@ import {Router} from '@angular/router';
             </template>
         </ul>
     `,
-    directives: [MenubarSub],
     providers: [DomHandler]
 })
 export class MenubarSub {
@@ -31,13 +32,17 @@ export class MenubarSub {
     
     @Input() root: boolean;
     
-    constructor(private domHandler: DomHandler, private router: Router) {}
+    constructor(public domHandler: DomHandler, public router: Router) {}
     
     activeItem: any;
     
     activeLink: any;
             
-    onItemMouseEnter(event, item) {
+    onItemMouseEnter(event, item, menuitem: MenuItem) {
+        if(menuitem.disabled) {
+            return;
+        }
+        
         this.activeItem = item;
         this.activeLink = item.children[0];
         let nextElement =  item.children[0].nextElementSibling;
@@ -62,6 +67,11 @@ export class MenubarSub {
     }
     
     itemClick(event, item: MenuItem) {
+        if(item.disabled) {
+            event.preventDefault();
+            return;
+        }
+        
         if(!item.url||item.routerLink) {
             event.preventDefault();
         }
@@ -72,7 +82,10 @@ export class MenubarSub {
                 item.eventEmitter.subscribe(item.command);
             }
             
-            item.eventEmitter.emit(event);
+            item.eventEmitter.emit({
+                originalEvent: event,
+                item: item
+            });
         }
 
         if(item.routerLink) {
@@ -98,8 +111,7 @@ export class MenubarSub {
             <p-menubarSub [item]="model" root="root"></p-menubarSub>
         </div>
     `,
-    providers: [DomHandler],
-    directives: [MenubarSub]
+    providers: [DomHandler]
 })
 export class Menubar implements OnDestroy {
 
@@ -109,7 +121,7 @@ export class Menubar implements OnDestroy {
 
     @Input() styleClass: string;
             
-    constructor(private el: ElementRef, private domHandler: DomHandler, private renderer: Renderer) {}
+    constructor(public el: ElementRef, public domHandler: DomHandler, public renderer: Renderer) {}
     
     unsubscribe(item: any) {
         if(item.eventEmitter) {
@@ -132,3 +144,10 @@ export class Menubar implements OnDestroy {
     }
 
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [Menubar],
+    declarations: [Menubar,MenubarSub]
+})
+export class MenubarModule { }

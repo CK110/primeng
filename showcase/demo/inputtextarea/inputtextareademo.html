@@ -1,11 +1,11 @@
-<div class="ContentSideSections">
+<div class="content-section">
     <div>
-        <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">InputTextarea</span>
-        <span class="defaultText">Inputtextarea add styling and autoResize functionality to standard textare element.</span>
+        <span class="feature-title">InputTextarea</span>
+        <span>Inputtextarea add styling and autoResize functionality to standard textare element.</span>
     </div>
 </div>
 
-<div class="ContentSideSections Implementation">
+<div class="content-section implementation">
     <h3 class="first">Default</h3>
     <textarea rows="5" cols="30" pInputTextarea></textarea>
 
@@ -13,13 +13,13 @@
     <textarea [rows]="5" [cols]="30" pInputTextarea autoResize="autoResize"></textarea>
 </div>
 
-<div class="ContentSideSections Source">
+<div class="content-section source">
     <p-tabView effect="fade">
         <p-tabPanel header="Documentation">
             <h3>Import</h3>
 <pre>
 <code class="language-typescript" pCode>
-import {InputTextarea} from 'primeng/primeng';
+import &#123;InputTextareaModule&#125; from 'primeng/primeng';
 </code>
 </pre>
 
@@ -96,7 +96,7 @@ import {InputTextarea} from 'primeng/primeng';
             </div>
 
             <h3>Dependencies</h3>
-            <p>Native directive that only requires the css of PrimeUI InputTextarea.</p>
+            <p>None.</p>
         </p-tabPanel>
 
         <p-tabPanel header="Source">

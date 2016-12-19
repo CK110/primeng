@@ -1,21 +1,8 @@
-import {Component,OnInit,ChangeDetectorRef} from '@angular/core';
-import {HTTP_PROVIDERS}    from '@angular/http';
-import {Schedule} from '../../../components/schedule/schedule';
-import {CodeHighlighter} from '../../../components/codehighlighter/codehighlighter';
-import {TabView} from '../../../components/tabview/tabview';
-import {TabPanel} from '../../../components/tabview/tabpanel';
-import {Calendar} from '../../../components/calendar/calendar';
-import {Button} from '../../../components/button/button';
-import {InputText} from '../../../components/inputtext/inputtext';
-import {Dialog} from '../../../components/dialog/dialog';
-import {Checkbox} from '../../../components/checkbox/checkbox';
+import {Component,OnInit} from '@angular/core';
 import {EventService} from '../service/eventservice';
-import {ROUTER_DIRECTIVES} from '@angular/router';
 
 @Component({
     templateUrl: 'showcase/demo/schedule/scheduledemo.html',
-    directives: [Schedule,Button,InputText,Calendar,Dialog,Checkbox,TabPanel,TabView,Button,CodeHighlighter,ROUTER_DIRECTIVES],
-    providers: [HTTP_PROVIDERS,EventService],
     styles: [`
         .ui-grid-row div {
           padding: 4px 10px
@@ -38,7 +25,7 @@ export class ScheduleDemo implements OnInit {
     
     idGen: number = 100;
     
-    constructor(private eventService: EventService, private cd: ChangeDetectorRef) { }
+    constructor(private eventService: EventService) { }
 
     ngOnInit() {
         this.eventService.getEvents().then(events => {this.events = events;});
@@ -54,9 +41,6 @@ export class ScheduleDemo implements OnInit {
         this.event = new MyEvent();
         this.event.start = event.date.format();
         this.dialogVisible = true;
-        
-        //trigger detection manually as somehow only moving the mouse quickly after click triggers the automatic detection
-        this.cd.detectChanges();
     }
     
     handleEventClick(e) {

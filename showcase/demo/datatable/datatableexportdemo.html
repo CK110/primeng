@@ -1,15 +1,15 @@
 <datatable-demos></datatable-demos>
 
-<div class="ContentSideSections">
+<div class="content-section">
     <div>
-        <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">DataTable - <span class="subitem">Export</span></span>
-        <span class="defaultText">DataTable can export its data to CSV format.</span>
+        <span class="feature-title">DataTable - <span class="subitem">Export</span></span>
+        <span>DataTable can export its data to CSV format.</span>
     </div>
 </div>
 
-<div class="ContentSideSections Implementation">
+<div class="content-section implementation">
     
-    <p-dataTable #dt [value]="cars">
+    <p-dataTable #dt [value]="cars" exportFilename="cars">
         <header>
             <div class="ui-helper-clearfix">
                 <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()" style="float:left"></button>
@@ -23,22 +23,22 @@
     
 </div>
 
-<div class="ContentSideSections Source">
+<div class="content-section source">
     <p-tabView effect="fade">
         <p-tabPanel header="datatableexportdemo.ts">
 <pre>
 <code class="language-typescript" pCode>
-export class DataTableExportDemo implements OnInit {
+export class DataTableExportDemo implements OnInit &#123;
 
     cars: Car[];
 
-    constructor(private carService: CarService) { }
+    constructor(private carService: CarService) &#123; &#125;
 
-    ngOnInit() {
+    ngOnInit() &#123;
         this.carService.getCarsSmall().then(cars => this.cars = cars);
-    }
+    &#125;
 
-}
+&#125;
 </code>
 </pre>            
         </p-tabPanel>
@@ -46,7 +46,7 @@ export class DataTableExportDemo implements OnInit {
         <p-tabPanel header="datatableexportdemo.html">
 <pre>
 <code class="language-markup" pCode>
-&lt;p-dataTable #dt [value]="cars"&gt;
+&lt;p-dataTable #dt [value]="cars" exportFilename="cars"&gt;
     &lt;header&gt;
         &lt;div class="ui-helper-clearfix"&gt;
             &lt;button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()" style="float:left"&gt;&lt;/button&gt;

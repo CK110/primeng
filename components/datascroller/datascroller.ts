@@ -1,6 +1,8 @@
-import {Component,ElementRef,AfterViewInit,OnDestroy,DoCheck,Input,Output,Renderer,EventEmitter,ContentChild,IterableDiffers,TemplateRef} from '@angular/core';
-import {Header} from '../common';
-import {Footer} from '../common';
+import {NgModule,Component,ElementRef,AfterViewInit,OnDestroy,DoCheck,Input,Output,Renderer,EventEmitter,ContentChild,IterableDiffers,TemplateRef} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {Header} from '../common/shared';
+import {Footer} from '../common/shared';
+import {SharedModule} from '../common/shared';
 import {DomHandler} from '../dom/domhandler';
 
 @Component({
@@ -12,7 +14,9 @@ import {DomHandler} from '../dom/domhandler';
         </div>
         <div class="ui-datascroller-content ui-widget-content" [ngStyle]="{'max-height': scrollHeight}">
             <ul class="ui-datascroller-list">
-                <template ngFor [ngForOf]="dataToRender" [ngForTemplate]="itemTemplate"></template>
+                <li *ngFor="let item of dataToRender">
+                    <template [pTemplateWrapper]="itemTemplate" [item]="item"></template>
+                </li>
             </ul>
         </div>
         <div class="ui-datascroller-footer ui-widget-header ui-corner-bottom" *ngIf="footer">
@@ -50,9 +54,9 @@ export class DataScroller implements AfterViewInit,DoCheck,OnDestroy {
     
     @Input() loader: any;
 
-    private dataToRender: any[] = [];
+    public dataToRender: any[] = [];
 
-    private first: number = 0;
+    public first: number = 0;
     
     differ: any;
     
@@ -60,7 +64,7 @@ export class DataScroller implements AfterViewInit,DoCheck,OnDestroy {
     
     contentElement: any;
 
-    constructor(private el: ElementRef, differs: IterableDiffers, private renderer: Renderer, private domHandler: DomHandler) {
+    constructor(public el: ElementRef, differs: IterableDiffers, public renderer: Renderer, public domHandler: DomHandler) {
         this.differ = differs.find([]).create(null);
     }
 
@@ -107,6 +111,12 @@ export class DataScroller implements AfterViewInit,DoCheck,OnDestroy {
             }
         }
         this.first = this.first + this.rows;
+    }
+     
+    reset() {
+        this.first = 0;
+        this.dataToRender = [];
+        this.load();
     }
 
     isEmpty() {
@@ -158,3 +168,11 @@ export class DataScroller implements AfterViewInit,DoCheck,OnDestroy {
         }
     }
 }
+
+@NgModule({
+    imports: [CommonModule,SharedModule],
+    exports: [DataScroller,SharedModule],
+    declarations: [DataScroller]
+})
+export class DataScrollerModule { }
+

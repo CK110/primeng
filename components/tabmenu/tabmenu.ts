@@ -1,6 +1,7 @@
-import {Component,ElementRef,OnDestroy,Input,Output,EventEmitter} from '@angular/core';
+import {NgModule,Component,ElementRef,OnDestroy,Input,Output,EventEmitter} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {DomHandler} from '../dom/domhandler';
-import {MenuItem} from '../common';
+import {MenuItem} from '../common/api';
 import {Location} from '@angular/common';
 import {Router} from '@angular/router';
 
@@ -10,9 +11,9 @@ import {Router} from '@angular/router';
         <div [ngClass]="'ui-tabmenu ui-widget ui-widget-content ui-corner-all'" [ngStyle]="style" [class]="styleClass">
             <ul class="ui-tabmenu-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" role="tablist">
                 <li *ngFor="let item of model" 
-                    [ngClass]="{'ui-tabmenuitem ui-state-default ui-corner-top':true,
+                    [ngClass]="{'ui-tabmenuitem ui-state-default ui-corner-top':true,'ui-state-disabled':item.disabled,
                         'ui-tabmenuitem-hasicon':item.icon,'ui-state-hover':hoveredItem==item,'ui-state-active':activeItem==item}"
-                    (mouseenter)="hoveredItem=item" (mouseleave)="hoveredItem=null">
+                    (mouseenter)="hoveredItem=item&&!item.disabled" (mouseleave)="hoveredItem=null">
                     <a [href]="item.url||'#'" class="ui-menuitem-link ui-corner-all" (click)="itemClick($event,item)">
                         <span class="ui-menuitem-icon fa" [ngClass]="item.icon"></span>
                         <span class="ui-menuitem-text">{{item.label}}</span>
@@ -35,7 +36,7 @@ export class TabMenu implements OnDestroy {
 
     @Input() styleClass: string;
     
-    constructor(private router: Router) {}
+    constructor(public router: Router) {}
         
     hoveredItem: MenuItem;
     
@@ -45,7 +46,12 @@ export class TabMenu implements OnDestroy {
         }
     }
     
-    itemClick(event, item: MenuItem) {
+    itemClick(event: Event, item: MenuItem) {
+        if(item.disabled) {
+            event.preventDefault();
+            return;
+        }
+        
         if(!item.url||item.routerLink) {
             event.preventDefault();
         }
@@ -56,7 +62,10 @@ export class TabMenu implements OnDestroy {
                 item.eventEmitter.subscribe(item.command);
             }
             
-            item.eventEmitter.emit(event);
+            item.eventEmitter.emit({
+                originalEvent: event,
+                item: item
+            });
         }
         
         if(item.routerLink) {
@@ -87,3 +96,10 @@ export class TabMenu implements OnDestroy {
     }
 
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [TabMenu],
+    declarations: [TabMenu]
+})
+export class TabMenuModule { }

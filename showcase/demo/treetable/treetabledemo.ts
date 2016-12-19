@@ -1,27 +1,21 @@
 import {Component,OnInit} from '@angular/core';
-import {TreeTable} from '../../../components/treetable/treetable';
-import {Column} from '../../../components/column/column';
-import {TreeNode} from '../../../components/common';
-import {CodeHighlighter} from '../../../components/codehighlighter/codehighlighter';
-import {TabView} from '../../../components/tabview/tabview';
-import {TabPanel} from '../../../components/tabview/tabpanel';
-import {ROUTER_DIRECTIVES} from '@angular/router';
-import {HTTP_PROVIDERS}    from '@angular/http';
 import {NodeService} from '../service/nodeservice';
-import {Growl} from '../../../components/growl/growl';
-import {Message} from '../../../components/common';
-import {Header} from '../../../components/common';
+import {Message,TreeNode} from '../../../components/common/api';
 
 @Component({
-    templateUrl: 'showcase/demo/treetable/treetabledemo.html',
-    directives: [TreeTable,Column,TabView,Growl,TabPanel,Header,CodeHighlighter,ROUTER_DIRECTIVES],
-    providers: [HTTP_PROVIDERS,NodeService]
+    templateUrl: 'showcase/demo/treetable/treetabledemo.html'
 })
 export class TreeTableDemo implements OnInit {
     
     msgs: Message[];
     
-    files: TreeNode[];
+    files1: TreeNode[];
+    
+    files2: TreeNode[];
+    
+    files3: TreeNode[];
+    
+    files4: TreeNode[];
     
     lazyFiles: TreeNode[];
         
@@ -32,7 +26,10 @@ export class TreeTableDemo implements OnInit {
     constructor(private nodeService: NodeService) { }
 
     ngOnInit() {
-        this.nodeService.getFilesystem().then(files => this.files = files);
+        this.nodeService.getFilesystem().then(files => this.files1 = files);
+        this.nodeService.getFilesystem().then(files => this.files2 = files);
+        this.nodeService.getFilesystem().then(files => this.files3 = files);
+        this.nodeService.getFilesystem().then(files => this.files4 = files);
         this.nodeService.getLazyFilesystem().then(files => this.lazyFiles = files);
     }
     
